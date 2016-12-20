@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhanglin.dao.PositionMapper" >
+  <resultMap id="BaseResultMap" type="com.zhanglin.pojo.Position" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="TIME" property="time" jdbcType="VARCHAR" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="HOLDPRICE" property="holdprice" jdbcType="DECIMAL" />
+    <result column="NUM" property="num" jdbcType="DECIMAL" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="DESCOM_ID" property="descomId" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, TIME, CODE, HOLDPRICE, NUM, UPDATETIME, DESCOM_ID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.PositionExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from T_TRADE_CC
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_TRADE_CC
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+    delete from T_TRADE_CC
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.zhanglin.pojo.Position" >
+    insert into T_TRADE_CC (ID, TIME, CODE, 
+      HOLDPRICE, NUM, UPDATETIME, 
+      DESCOM_ID)
+    values (#{id,jdbcType=DECIMAL}, #{time,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{holdprice,jdbcType=DECIMAL}, #{num,jdbcType=DECIMAL}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{descomId,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhanglin.pojo.Position" >
+    insert into T_TRADE_CC
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="time != null" >
+        TIME,
+      </if>
+      <if test="code != null" >
+        CODE,
+      </if>
+      <if test="holdprice != null" >
+        HOLDPRICE,
+      </if>
+      <if test="num != null" >
+        NUM,
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME,
+      </if>
+      <if test="descomId != null" >
+        DESCOM_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="holdprice != null" >
+        #{holdprice,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=DECIMAL},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="descomId != null" >
+        #{descomId,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhanglin.pojo.Position" >
+    update T_TRADE_CC
+    <set >
+      <if test="time != null" >
+        TIME = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="holdprice != null" >
+        HOLDPRICE = #{holdprice,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null" >
+        NUM = #{num,jdbcType=DECIMAL},
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="descomId != null" >
+        DESCOM_ID = #{descomId,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhanglin.pojo.Position" >
+    update T_TRADE_CC
+    set TIME = #{time,jdbcType=VARCHAR},
+      CODE = #{code,jdbcType=VARCHAR},
+      HOLDPRICE = #{holdprice,jdbcType=DECIMAL},
+      NUM = #{num,jdbcType=DECIMAL},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      DESCOM_ID = #{descomId,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>
