@@ -2,11 +2,11 @@ package com.zhanglin.dao;
 
 import com.zhanglin.pojo.Asset;
 import com.zhanglin.pojo.AssetExample;
-import java.math.BigDecimal;
+import com.zhanglin.pojo.AssetKey;
 import java.util.List;
 
 public interface AssetMapper {
-    int deleteByPrimaryKey(BigDecimal id);
+    int deleteByPrimaryKey(AssetKey key);
 
     int insert(Asset record);
 
@@ -14,7 +14,7 @@ public interface AssetMapper {
 
     List<Asset> selectByExample(AssetExample example);
 
-    Asset selectByPrimaryKey(BigDecimal id);
+    Asset selectByPrimaryKey(AssetKey key);
 
     int updateByPrimaryKeySelective(Asset record);
 

@@ -1,10 +1,13 @@
 package com.zhanglin.pojo;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.zhanglin.bean.Data;
+
 public class Order {
-    private BigDecimal id;
+    private String id;
 
     private String time;
 
@@ -22,15 +25,28 @@ public class Order {
 
     private String recvtime;
 
+    private BigDecimal newid;
+
     private Date updatetime;
 
-    private BigDecimal descomId;
+    public Order(Data data) {
+		this.code = data.getCode();
+		this.delay = new BigDecimal(data.getDelay());
+		this.id = "id";
+		this.orderPrice = data.getPrice();
+		//this.orderTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		this.orderTime = data.getTime();
+		this.recvtime = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		this.time = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		this.tradetype = new BigDecimal(data.getTradetype());
+		this.updatetime = new Date();
+	}
 
-    public BigDecimal getId() {
+	public String getId() {
         return id;
     }
 
-    public void setId(BigDecimal id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -98,19 +114,19 @@ public class Order {
         this.recvtime = recvtime == null ? null : recvtime.trim();
     }
 
+    public BigDecimal getNewid() {
+        return newid;
+    }
+
+    public void setNewid(BigDecimal newid) {
+        this.newid = newid;
+    }
+
     public Date getUpdatetime() {
         return updatetime;
     }
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
-    }
-
-    public BigDecimal getDescomId() {
-        return descomId;
-    }
-
-    public void setDescomId(BigDecimal descomId) {
-        this.descomId = descomId;
     }
 }

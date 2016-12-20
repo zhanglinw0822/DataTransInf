@@ -15,11 +15,11 @@ import com.zhanglin.service.IDescomService;
 
 public class CacheManager {
 	private static Logger logger = Logger.getLogger(CacheManager.class);  
-	private LoadingCache<Integer, Descom> descoms = CacheBuilder.newBuilder()
+	private LoadingCache<String, Descom> descoms = CacheBuilder.newBuilder()
 			.expireAfterWrite(60, TimeUnit.SECONDS)
-			.maximumSize(1000).build(new CacheLoader<Integer, Descom>() {
+			.maximumSize(1000).build(new CacheLoader<String, Descom>() {
 				@Override
-				public Descom load(Integer key) throws Exception {
+				public Descom load(String key) throws Exception {
 					return loadDescom(key);
 				}
 			});
@@ -39,14 +39,18 @@ public class CacheManager {
 	@Resource
 	IDescomService service;
 	
-	private Descom loadDescom(Integer id) {
-		return service.getDescom(id);
+	private Descom loadDescom(String id) throws Exception {
+		Descom descom = service.getDescom(id);
+		if(null==descom)
+			throw new Exception("组合ID="+id+"未找到数据");
+		return descom;
 	}
 	
-	public Descom getDescom(Integer id){
+	public Descom getDescom(String id){
 		try {
-			return descoms.get(id);
-		} catch (ExecutionException e) {
+//			return descoms.get(id);
+			return service.getDescom(id);
+		} catch (Exception e) {
 			logger.error("获取组合失败", e);
 			return null;
 		}

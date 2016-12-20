@@ -3,32 +3,14 @@ package com.zhanglin.pojo;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Asset {
-    private BigDecimal id;
-
-    private String time;
-
+public class Asset extends AssetKey {
     private BigDecimal cash;
 
+    private BigDecimal addcash;
+
+    private BigDecimal asset;
+
     private Date updatetime;
-
-    private BigDecimal descomId;
-
-    public BigDecimal getId() {
-        return id;
-    }
-
-    public void setId(BigDecimal id) {
-        this.id = id;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time == null ? null : time.trim();
-    }
 
     public BigDecimal getCash() {
         return cash;
@@ -38,19 +20,27 @@ public class Asset {
         this.cash = cash;
     }
 
+    public BigDecimal getAddcash() {
+        return addcash;
+    }
+
+    public void setAddcash(BigDecimal addcash) {
+        this.addcash = addcash;
+    }
+
+    public BigDecimal getAsset() {
+        return asset;
+    }
+
+    public void setAsset(BigDecimal asset) {
+        this.asset = asset;
+    }
+
     public Date getUpdatetime() {
         return updatetime;
     }
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
-    }
-
-    public BigDecimal getDescomId() {
-        return descomId;
-    }
-
-    public void setDescomId(BigDecimal descomId) {
-        this.descomId = descomId;
     }
 }

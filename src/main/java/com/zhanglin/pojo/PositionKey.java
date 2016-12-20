@@ -3,18 +3,18 @@ package com.zhanglin.pojo;
 import java.math.BigDecimal;
 
 public class PositionKey {
-    private BigDecimal id;
+    private BigDecimal newid;
 
     private String time;
 
     private String code;
 
-    public BigDecimal getId() {
-        return id;
+    public BigDecimal getNewid() {
+        return newid;
     }
 
-    public void setId(BigDecimal id) {
-        this.id = id;
+    public void setNewid(BigDecimal newid) {
+        this.newid = newid;
     }
 
     public String getTime() {

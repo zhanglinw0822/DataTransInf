@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface DescomMapper {
-    int deleteByPrimaryKey(BigDecimal id);
+    int deleteByPrimaryKey(BigDecimal newid);
 
     int insert(Descom record);
 
@@ -14,7 +14,7 @@ public interface DescomMapper {
 
     List<Descom> selectByExample(DescomExample example);
 
-    Descom selectByPrimaryKey(BigDecimal id);
+    Descom selectByPrimaryKey(BigDecimal newid);
 
     int updateByPrimaryKeySelective(Descom record);
 

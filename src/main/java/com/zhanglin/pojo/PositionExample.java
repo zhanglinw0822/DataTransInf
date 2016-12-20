@@ -106,63 +106,63 @@ public class PositionExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andIdIsNull() {
-            addCriterion("ID is null");
+        public Criteria andNewidIsNull() {
+            addCriterion("NEWID is null");
             return (Criteria) this;
         }
 
-        public Criteria andIdIsNotNull() {
-            addCriterion("ID is not null");
+        public Criteria andNewidIsNotNull() {
+            addCriterion("NEWID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(BigDecimal value) {
-            addCriterion("ID =", value, "id");
+        public Criteria andNewidEqualTo(BigDecimal value) {
+            addCriterion("NEWID =", value, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotEqualTo(BigDecimal value) {
-            addCriterion("ID <>", value, "id");
+        public Criteria andNewidNotEqualTo(BigDecimal value) {
+            addCriterion("NEWID <>", value, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThan(BigDecimal value) {
-            addCriterion("ID >", value, "id");
+        public Criteria andNewidGreaterThan(BigDecimal value) {
+            addCriterion("NEWID >", value, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThanOrEqualTo(BigDecimal value) {
-            addCriterion("ID >=", value, "id");
+        public Criteria andNewidGreaterThanOrEqualTo(BigDecimal value) {
+            addCriterion("NEWID >=", value, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThan(BigDecimal value) {
-            addCriterion("ID <", value, "id");
+        public Criteria andNewidLessThan(BigDecimal value) {
+            addCriterion("NEWID <", value, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThanOrEqualTo(BigDecimal value) {
-            addCriterion("ID <=", value, "id");
+        public Criteria andNewidLessThanOrEqualTo(BigDecimal value) {
+            addCriterion("NEWID <=", value, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdIn(List<BigDecimal> values) {
-            addCriterion("ID in", values, "id");
+        public Criteria andNewidIn(List<BigDecimal> values) {
+            addCriterion("NEWID in", values, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotIn(List<BigDecimal> values) {
-            addCriterion("ID not in", values, "id");
+        public Criteria andNewidNotIn(List<BigDecimal> values) {
+            addCriterion("NEWID not in", values, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("ID between", value1, value2, "id");
+        public Criteria andNewidBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("NEWID between", value1, value2, "newid");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("ID not between", value1, value2, "id");
+        public Criteria andNewidNotBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("NEWID not between", value1, value2, "newid");
             return (Criteria) this;
         }
 
@@ -426,6 +426,66 @@ public class PositionExample {
             return (Criteria) this;
         }
 
+        public Criteria andCloseIsNull() {
+            addCriterion("CLOSE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseIsNotNull() {
+            addCriterion("CLOSE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseEqualTo(BigDecimal value) {
+            addCriterion("CLOSE =", value, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseNotEqualTo(BigDecimal value) {
+            addCriterion("CLOSE <>", value, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseGreaterThan(BigDecimal value) {
+            addCriterion("CLOSE >", value, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseGreaterThanOrEqualTo(BigDecimal value) {
+            addCriterion("CLOSE >=", value, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseLessThan(BigDecimal value) {
+            addCriterion("CLOSE <", value, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseLessThanOrEqualTo(BigDecimal value) {
+            addCriterion("CLOSE <=", value, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseIn(List<BigDecimal> values) {
+            addCriterion("CLOSE in", values, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseNotIn(List<BigDecimal> values) {
+            addCriterion("CLOSE not in", values, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("CLOSE between", value1, value2, "close");
+            return (Criteria) this;
+        }
+
+        public Criteria andCloseNotBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("CLOSE not between", value1, value2, "close");
+            return (Criteria) this;
+        }
+
         public Criteria andUpdatetimeIsNull() {
             addCriterion("UPDATETIME is null");
             return (Criteria) this;
@@ -483,66 +543,6 @@ public class PositionExample {
 
         public Criteria andUpdatetimeNotBetween(Date value1, Date value2) {
             addCriterion("UPDATETIME not between", value1, value2, "updatetime");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdIsNull() {
-            addCriterion("DESCOM_ID is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdIsNotNull() {
-            addCriterion("DESCOM_ID is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdEqualTo(BigDecimal value) {
-            addCriterion("DESCOM_ID =", value, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdNotEqualTo(BigDecimal value) {
-            addCriterion("DESCOM_ID <>", value, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdGreaterThan(BigDecimal value) {
-            addCriterion("DESCOM_ID >", value, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdGreaterThanOrEqualTo(BigDecimal value) {
-            addCriterion("DESCOM_ID >=", value, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdLessThan(BigDecimal value) {
-            addCriterion("DESCOM_ID <", value, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdLessThanOrEqualTo(BigDecimal value) {
-            addCriterion("DESCOM_ID <=", value, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdIn(List<BigDecimal> values) {
-            addCriterion("DESCOM_ID in", values, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdNotIn(List<BigDecimal> values) {
-            addCriterion("DESCOM_ID not in", values, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("DESCOM_ID between", value1, value2, "descomId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDescomIdNotBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("DESCOM_ID not between", value1, value2, "descomId");
             return (Criteria) this;
         }
     }

@@ -2,11 +2,11 @@ package com.zhanglin.dao;
 
 import com.zhanglin.pojo.Position;
 import com.zhanglin.pojo.PositionExample;
-import java.math.BigDecimal;
+import com.zhanglin.pojo.PositionKey;
 import java.util.List;
 
 public interface PositionMapper {
-    int deleteByPrimaryKey(BigDecimal id);
+    int deleteByPrimaryKey(PositionKey key);
 
     int insert(Position record);
 
@@ -14,7 +14,7 @@ public interface PositionMapper {
 
     List<Position> selectByExample(PositionExample example);
 
-    Position selectByPrimaryKey(BigDecimal id);
+    Position selectByPrimaryKey(PositionKey key);
 
     int updateByPrimaryKeySelective(Position record);
 

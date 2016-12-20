@@ -1,4 +1,4 @@
-package com.zhanglin.pojo;
+package com.zhanglin.bean;
 
 import java.math.BigDecimal;
 
@@ -7,7 +7,7 @@ public class Data {
 	/**
 	 * 组合id
 	 */
-	private int id;
+	private String id;
 	/**
 	 * 股票代码
 	 */
@@ -25,7 +25,7 @@ public class Data {
 	 */
 	private BigDecimal weight2;
 	/**
-	 * 交易方向
+	 * 交易方向,1：买，0：卖
 	 */
 	private int tradetype;
 	/**
@@ -40,10 +40,10 @@ public class Data {
 	 * 延迟时间(单位分钟)
 	 */
 	private String delay;
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getCode() {

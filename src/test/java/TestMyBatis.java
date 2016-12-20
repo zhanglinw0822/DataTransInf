@@ -30,7 +30,7 @@ public class TestMyBatis {
 
 	@Test
 	public void test1() {
-		Descom descom = service.getDescom(1);
+		Descom descom = service.getDescom("1");
 		// System.out.println(user.getUserName());
 		// logger.info("值："+user.getUserName());
 		logger.info(JSON.toJSONString(descom));

@@ -2,7 +2,7 @@ package com.zhanglin.service;
 
 import java.util.List;
 
-import com.zhanglin.pojo.Data;
+import com.zhanglin.bean.Data;
 
 
 public interface IDataTransInfService {

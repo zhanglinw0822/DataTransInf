@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zhanglin.dao.DescomMapper" >
   <resultMap id="BaseResultMap" type="com.zhanglin.pojo.Descom" >
-    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <id column="NEWID" property="newid" jdbcType="DECIMAL" />
+    <result column="ID" property="id" jdbcType="OTHER" />
     <result column="TIME" property="time" jdbcType="VARCHAR" />
     <result column="ISTRUE" property="istrue" jdbcType="DECIMAL" />
     <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
@@ -37,7 +38,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    ID, TIME, ISTRUE, UPDATETIME
+    NEWID, ID, TIME, ISTRUE, UPDATETIME
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.DescomExample" >
     select
@@ -46,7 +47,7 @@
     </if>
     'false' as QUERYID,
     <include refid="Base_Column_List" />
-    from T_TRADE_DESCOM
+    from T_DESCOM
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -57,22 +58,25 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
     select 
     <include refid="Base_Column_List" />
-    from T_TRADE_DESCOM
-    where ID = #{id,jdbcType=DECIMAL}
+    from T_DESCOM
+    where NEWID = #{newid,jdbcType=DECIMAL}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
-    delete from T_TRADE_DESCOM
-    where ID = #{id,jdbcType=DECIMAL}
+    delete from T_DESCOM
+    where NEWID = #{newid,jdbcType=DECIMAL}
   </delete>
   <insert id="insert" parameterType="com.zhanglin.pojo.Descom" >
-    insert into T_TRADE_DESCOM (ID, TIME, ISTRUE, 
-      UPDATETIME)
-    values (#{id,jdbcType=DECIMAL}, #{time,jdbcType=VARCHAR}, #{istrue,jdbcType=DECIMAL}, 
-      #{updatetime,jdbcType=TIMESTAMP})
+    insert into T_DESCOM (NEWID, ID, TIME, 
+      ISTRUE, UPDATETIME)
+    values (#{newid,jdbcType=DECIMAL}, #{id,jdbcType=OTHER}, #{time,jdbcType=VARCHAR}, 
+      #{istrue,jdbcType=DECIMAL}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.zhanglin.pojo.Descom" >
-    insert into T_TRADE_DESCOM
+    insert into T_DESCOM
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="newid != null" >
+        NEWID,
+      </if>
       <if test="id != null" >
         ID,
       </if>
@@ -87,8 +91,11 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="newid != null" >
+        #{newid,jdbcType=DECIMAL},
+      </if>
       <if test="id != null" >
-        #{id,jdbcType=DECIMAL},
+        #{id,jdbcType=OTHER},
       </if>
       <if test="time != null" >
         #{time,jdbcType=VARCHAR},
@@ -102,8 +109,11 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.zhanglin.pojo.Descom" >
-    update T_TRADE_DESCOM
+    update T_DESCOM
     <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=OTHER},
+      </if>
       <if test="time != null" >
         TIME = #{time,jdbcType=VARCHAR},
       </if>
@@ -114,13 +124,14 @@
         UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where ID = #{id,jdbcType=DECIMAL}
+    where NEWID = #{newid,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zhanglin.pojo.Descom" >
-    update T_TRADE_DESCOM
-    set TIME = #{time,jdbcType=VARCHAR},
+    update T_DESCOM
+    set ID = #{id,jdbcType=OTHER},
+      TIME = #{time,jdbcType=VARCHAR},
       ISTRUE = #{istrue,jdbcType=DECIMAL},
       UPDATETIME = #{updatetime,jdbcType=TIMESTAMP}
-    where ID = #{id,jdbcType=DECIMAL}
+    where NEWID = #{newid,jdbcType=DECIMAL}
   </update>
 </mapper>

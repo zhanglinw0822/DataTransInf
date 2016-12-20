@@ -106,6 +106,66 @@ public class DescomExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
+        public Criteria andNewidIsNull() {
+            addCriterion("NEWID is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidIsNotNull() {
+            addCriterion("NEWID is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidEqualTo(BigDecimal value) {
+            addCriterion("NEWID =", value, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidNotEqualTo(BigDecimal value) {
+            addCriterion("NEWID <>", value, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidGreaterThan(BigDecimal value) {
+            addCriterion("NEWID >", value, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidGreaterThanOrEqualTo(BigDecimal value) {
+            addCriterion("NEWID >=", value, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidLessThan(BigDecimal value) {
+            addCriterion("NEWID <", value, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidLessThanOrEqualTo(BigDecimal value) {
+            addCriterion("NEWID <=", value, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidIn(List<BigDecimal> values) {
+            addCriterion("NEWID in", values, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidNotIn(List<BigDecimal> values) {
+            addCriterion("NEWID not in", values, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("NEWID between", value1, value2, "newid");
+            return (Criteria) this;
+        }
+
+        public Criteria andNewidNotBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("NEWID not between", value1, value2, "newid");
+            return (Criteria) this;
+        }
+
         public Criteria andIdIsNull() {
             addCriterion("ID is null");
             return (Criteria) this;
@@ -116,52 +176,52 @@ public class DescomExample {
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(BigDecimal value) {
+        public Criteria andIdEqualTo(Object value) {
             addCriterion("ID =", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotEqualTo(BigDecimal value) {
+        public Criteria andIdNotEqualTo(Object value) {
             addCriterion("ID <>", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThan(BigDecimal value) {
+        public Criteria andIdGreaterThan(Object value) {
             addCriterion("ID >", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThanOrEqualTo(BigDecimal value) {
+        public Criteria andIdGreaterThanOrEqualTo(Object value) {
             addCriterion("ID >=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThan(BigDecimal value) {
+        public Criteria andIdLessThan(Object value) {
             addCriterion("ID <", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThanOrEqualTo(BigDecimal value) {
+        public Criteria andIdLessThanOrEqualTo(Object value) {
             addCriterion("ID <=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdIn(List<BigDecimal> values) {
+        public Criteria andIdIn(List<Object> values) {
             addCriterion("ID in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotIn(List<BigDecimal> values) {
+        public Criteria andIdNotIn(List<Object> values) {
             addCriterion("ID not in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdBetween(BigDecimal value1, BigDecimal value2) {
+        public Criteria andIdBetween(Object value1, Object value2) {
             addCriterion("ID between", value1, value2, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotBetween(BigDecimal value1, BigDecimal value2) {
+        public Criteria andIdNotBetween(Object value1, Object value2) {
             addCriterion("ID not between", value1, value2, "id");
             return (Criteria) this;
         }
