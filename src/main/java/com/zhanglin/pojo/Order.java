@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.zhanglin.Constant;
 import com.zhanglin.bean.Data;
+import com.zhanglin.bean.Detail;
 
 public class Order {
     private String id;
@@ -29,16 +31,15 @@ public class Order {
 
     private Date updatetime;
 
-    public Order(Data data) {
-		this.code = data.getCode();
+    public Order(Detail detail, Data data) {
+		this.code = detail.getCode();
 		this.delay = new BigDecimal(data.getDelay());
 		this.id = "id";
-		this.orderPrice = data.getPrice();
-		//this.orderTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		this.orderTime = data.getTime();
-		this.recvtime = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		this.time = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		this.tradetype = new BigDecimal(data.getTradetype());
+		this.orderPrice = detail.getPrice();
+		this.orderTime = data.getRealtime();
+		this.recvtime = new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT).format(new Date());
+		this.time = new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT).format(new Date());
+		this.tradetype = new BigDecimal(detail.getTradetype());
 		this.updatetime = new Date();
 	}
 

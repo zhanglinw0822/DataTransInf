@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhanglin.dao.PositionRTMapper" >
+  <resultMap id="BaseResultMap" type="com.zhanglin.pojo.PositionRT" >
+    <result column="CODE" property="code" jdbcType="VARCHAR" />
+    <result column="HOLDPRICE" property="holdprice" jdbcType="DECIMAL" />
+    <result column="NUM" property="num" jdbcType="DECIMAL" />
+    <result column="NEWID" property="newid" jdbcType="DECIMAL" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    CODE, HOLDPRICE, NUM, NEWID, UPDATETIME
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.PositionRTExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from T_CC_RT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <insert id="insert" parameterType="com.zhanglin.pojo.PositionRT" >
+    insert into T_CC_RT (CODE, HOLDPRICE, NUM, 
+      NEWID, UPDATETIME)
+    values (#{code,jdbcType=VARCHAR}, #{holdprice,jdbcType=DECIMAL}, #{num,jdbcType=DECIMAL}, 
+      #{newid,jdbcType=DECIMAL}, sysdate)
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhanglin.pojo.PositionRT" >
+    insert into T_CC_RT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        CODE,
+      </if>
+      <if test="holdprice != null" >
+        HOLDPRICE,
+      </if>
+      <if test="num != null" >
+        NUM,
+      </if>
+      <if test="newid != null" >
+        NEWID,
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="holdprice != null" >
+        #{holdprice,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=DECIMAL},
+      </if>
+      <if test="newid != null" >
+        #{newid,jdbcType=DECIMAL},
+      </if>
+      <if test="updatetime != null" >
+        sysdate,
+      </if>
+    </trim>
+  </insert>
+  <delete id="deleteAll">
+    delete from T_CC_RT
+  </delete>
+</mapper>

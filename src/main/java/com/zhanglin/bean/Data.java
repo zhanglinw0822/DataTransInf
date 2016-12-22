@@ -1,106 +1,97 @@
 package com.zhanglin.bean;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import com.google.common.base.MoreObjects;
 
 public class Data {
-	
+	/**
+	 * 消息id
+	 */
+	private String msguid;
 	/**
 	 * 组合id
 	 */
 	private String id;
 	/**
-	 * 股票代码
-	 */
-	private String code;
-	/**
-	 * 委托价格
-	 */
-	private BigDecimal price;
-	/**
-	 * 调仓前权重
-	 */
-	private BigDecimal weight1;
-	/**
-	 * 调仓后权重
-	 */
-	private BigDecimal weight2;
-	/**
-	 * 交易方向,1：买，0：卖
-	 */
-	private int tradetype;
-	/**
 	 * 委托时间(精确到分钟)
 	 */
-	private String time;
+	private String realtime;
 	/**
 	 * 委托日期
 	 */
-	private String date;
+	private String ordertime;
 	/**
 	 * 延迟时间(单位分钟)
 	 */
-	private String delay;
+	private int delay;
+	
+	private List<Detail> details;
+	/**
+	 * 原始json
+	 */
+	private String origJson;
+	/**
+	 * 请求id
+	 */
+	private BigDecimal requestId;
+	
+	public BigDecimal getRequestId() {
+		return requestId;
+	}
+	public void setRequestId(BigDecimal requestId) {
+		this.requestId = requestId;
+	}
+	public String getOrigJson() {
+		return origJson;
+	}
+	public void setOrigJson(String origJson) {
+		this.origJson = origJson;
+	}
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getCode() {
-		return code;
+	public String getRealtime() {
+		return realtime;
 	}
-	public void setCode(String code) {
-		this.code = code;
+	public void setRealtime(String realtime) {
+		this.realtime = realtime;
 	}
-	public BigDecimal getPrice() {
-		return price;
+	public String getOrdertime() {
+		return ordertime;
 	}
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setOrdertime(String ordertime) {
+		this.ordertime = ordertime;
 	}
-	public BigDecimal getWeight1() {
-		return weight1;
-	}
-	public void setWeight1(BigDecimal weight1) {
-		this.weight1 = weight1;
-	}
-	public BigDecimal getWeight2() {
-		return weight2;
-	}
-	public void setWeight2(BigDecimal weight2) {
-		this.weight2 = weight2;
-	}
-	public int getTradetype() {
-		return tradetype;
-	}
-	public void setTradetype(int tradetype) {
-		this.tradetype = tradetype;
-	}
-	public String getTime() {
-		return time;
-	}
-	public void setTime(String time) {
-		this.time = time;
-	}
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
-	public String getDelay() {
+	public int getDelay() {
 		return delay;
 	}
-	public void setDelay(String delay) {
+	public void setDelay(int delay) {
 		this.delay = delay;
 	}
-	
+	public String getMsguid() {
+		return msguid;
+	}
+	public void setMsguid(String msguid) {
+		this.msguid = msguid;
+	}
+	public List<Detail> getDetails() {
+		return details;
+	}
+	public void setDetails(List<Detail> details) {
+		this.details = details;
+	}
 	@Override
 	public String toString() {
-		return "Data [id=" + id + ", code=" + code + ", price=" + price
-				+ ", weight1=" + weight1 + ", weight2=" + weight2
-				+ ", tradetype=" + tradetype + ", time=" + time + ", date="
-				+ date + ", delay=" + delay + "]";
+		return MoreObjects.toStringHelper(this).add("msguid", msguid)
+				.add("id", id).add("realtime", realtime)
+				.add("ordertime", ordertime).add("delay", delay)
+				.add("details", details).toString();
 	}
+	
 	
 }

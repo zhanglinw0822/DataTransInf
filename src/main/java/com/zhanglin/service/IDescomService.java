@@ -1,10 +1,9 @@
 package com.zhanglin.service;
 
-import java.math.BigDecimal;
-
+import com.zhanglin.pojo.AssetRT;
 import com.zhanglin.pojo.Descom;
 import com.zhanglin.pojo.Order;
-import com.zhanglin.pojo.Position;
+import com.zhanglin.pojo.PositionRT;
 
 
 
@@ -13,7 +12,7 @@ public interface IDescomService {
 
 	public void insertOrder(Order order);
 
-	public void updatePosition(Position position);
+	public void updatePositionRT(PositionRT position);
 
-	public void updateAsset(BigDecimal newId, BigDecimal multiply);
+	public void updateAssetRT(AssetRT asset);
 }

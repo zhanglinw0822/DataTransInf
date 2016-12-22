@@ -1,30 +1,43 @@
 package com.zhanglin.cache;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.zhanglin.pojo.Descom;
 import com.zhanglin.service.IDescomService;
+import com.zhanglin.service.IMarketService;
+import com.zhanglin.tools.SpringContextUtil;
 
 public class CacheManager {
 	private static Logger logger = Logger.getLogger(CacheManager.class);  
 	private LoadingCache<String, Descom> descoms = CacheBuilder.newBuilder()
-			.expireAfterWrite(60, TimeUnit.SECONDS)
-			.maximumSize(1000).build(new CacheLoader<String, Descom>() {
+			.expireAfterWrite(1, TimeUnit.HOURS)
+			.build(new CacheLoader<String, Descom>() {
 				@Override
 				public Descom load(String key) throws Exception {
 					return loadDescom(key);
 				}
 			});
+	private LoadingCache<String, String> status = CacheBuilder.newBuilder()
+			.expireAfterWrite(1, TimeUnit.MINUTES)
+			.build(new CacheLoader<String, String>() {
+				@Override
+				public String load(String key) throws Exception {
+					return loadSystemStatus();
+				}
+
+			});
 	
 	private static CacheManager instance=null;  
+	
+	private CacheManager(){
+		
+	}
 	
 	public static CacheManager getInstance(){
 		if(instance==null){
@@ -36,8 +49,8 @@ public class CacheManager {
 		return instance;
 	}
 	
-	@Resource
-	IDescomService service;
+	IDescomService service = SpringContextUtil.getBean("descomService");
+	IMarketService marketService = (IMarketService)SpringContextUtil.getBean("marketService");
 	
 	private Descom loadDescom(String id) throws Exception {
 		Descom descom = service.getDescom(id);
@@ -46,13 +59,37 @@ public class CacheManager {
 		return descom;
 	}
 	
+	private String loadSystemStatus() {
+		return marketService.getSystemStaus();
+	}
+	
 	public Descom getDescom(String id){
 		try {
-//			return descoms.get(id);
-			return service.getDescom(id);
+			Descom descom = descoms.get(id);
+			logger.info("缓存中数据："+descoms.asMap());
+			return descom;
 		} catch (Exception e) {
 			logger.error("获取组合失败", e);
 			return null;
 		}
+	}
+	
+	public String getSystemStatus(){
+		try {
+			String systemStatus = status.get("status");
+			logger.info("缓存中数据："+status.asMap());
+			return systemStatus;
+		} catch (Exception e) {
+			logger.error("获取系统状态失败", e);
+			return null;
+		}
+	}
+	
+	public void invalidate(String id){
+		descoms.invalidate(id);
+	}
+	
+	public void invalidateAll(){
+		descoms.invalidateAll();
 	}
 }

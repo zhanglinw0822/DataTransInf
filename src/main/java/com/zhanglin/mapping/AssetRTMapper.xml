@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zhanglin.dao.AssetMapper" >
-  <resultMap id="BaseResultMap" type="com.zhanglin.pojo.Asset" >
-    <id column="TIME" property="time" jdbcType="VARCHAR" />
+<mapper namespace="com.zhanglin.dao.AssetRTMapper" >
+  <resultMap id="BaseResultMap" type="com.zhanglin.pojo.AssetRT" >
     <id column="NEWID" property="newid" jdbcType="DECIMAL" />
     <result column="CASH" property="cash" jdbcType="DECIMAL" />
-    <result column="ADDCASH" property="addcash" jdbcType="DECIMAL" />
     <result column="ASSET" property="asset" jdbcType="DECIMAL" />
     <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -39,16 +37,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    TIME, NEWID, CASH, ADDCASH, ASSET, UPDATETIME
+    NEWID, CASH, ASSET, UPDATETIME
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.AssetExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.AssetRTExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     'false' as QUERYID,
     <include refid="Base_Column_List" />
-    from T_ASSET
+    from T_ASSET_RT
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -56,40 +54,30 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.AssetKey" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
     select 
     <include refid="Base_Column_List" />
-    from T_ASSET
-    where TIME = #{time,jdbcType=VARCHAR}
-      and NEWID = #{newid,jdbcType=DECIMAL}
+    from T_ASSET_RT
+    where NEWID = #{newid,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.zhanglin.pojo.AssetKey" >
-    delete from T_ASSET
-    where TIME = #{time,jdbcType=VARCHAR}
-      and NEWID = #{newid,jdbcType=DECIMAL}
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+    delete from T_ASSET_RT
+    where NEWID = #{newid,jdbcType=DECIMAL}
   </delete>
-  <insert id="insert" parameterType="com.zhanglin.pojo.Asset" >
-    insert into T_ASSET (TIME, NEWID, CASH, 
-      ADDCASH, ASSET, UPDATETIME
-      )
-    values (#{time,jdbcType=VARCHAR}, #{newid,jdbcType=DECIMAL}, #{cash,jdbcType=DECIMAL}, 
-      #{addcash,jdbcType=DECIMAL}, #{asset,jdbcType=DECIMAL}, sysdate
-      )
+  <insert id="insert" parameterType="com.zhanglin.pojo.AssetRT" >
+    insert into T_ASSET_RT (NEWID, CASH, ASSET, 
+      UPDATETIME)
+    values (#{newid,jdbcType=DECIMAL}, #{cash,jdbcType=DECIMAL}, #{asset,jdbcType=DECIMAL}, 
+      sysdate)
   </insert>
-  <insert id="insertSelective" parameterType="com.zhanglin.pojo.Asset" >
-    insert into T_ASSET
+  <insert id="insertSelective" parameterType="com.zhanglin.pojo.AssetRT" >
+    insert into T_ASSET_RT
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="time != null" >
-        TIME,
-      </if>
       <if test="newid != null" >
         NEWID,
       </if>
       <if test="cash != null" >
         CASH,
-      </if>
-      <if test="addcash != null" >
-        ADDCASH,
       </if>
       <if test="asset != null" >
         ASSET,
@@ -99,17 +87,11 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="time != null" >
-        #{time,jdbcType=VARCHAR},
-      </if>
       <if test="newid != null" >
         #{newid,jdbcType=DECIMAL},
       </if>
       <if test="cash != null" >
         #{cash,jdbcType=DECIMAL},
-      </if>
-      <if test="addcash != null" >
-        #{addcash,jdbcType=DECIMAL},
       </if>
       <if test="asset != null" >
         #{asset,jdbcType=DECIMAL},
@@ -119,14 +101,11 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zhanglin.pojo.Asset" >
-    update T_ASSET
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhanglin.pojo.AssetRT" >
+    update T_ASSET_RT
     <set >
       <if test="cash != null" >
         CASH = #{cash,jdbcType=DECIMAL},
-      </if>
-      <if test="addcash != null" >
-        ADDCASH = #{addcash,jdbcType=DECIMAL},
       </if>
       <if test="asset != null" >
         ASSET = #{asset,jdbcType=DECIMAL},
@@ -135,26 +114,16 @@
         UPDATETIME = sysdate,
       </if>
     </set>
-    where TIME = #{time,jdbcType=VARCHAR}
-      and NEWID = #{newid,jdbcType=DECIMAL}
+    where NEWID = #{newid,jdbcType=DECIMAL}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zhanglin.pojo.Asset" >
-    update T_ASSET
+  <update id="updateByPrimaryKey" parameterType="com.zhanglin.pojo.AssetRT" >
+    update T_ASSET_RT
     set CASH = #{cash,jdbcType=DECIMAL},
-      ADDCASH = #{addcash,jdbcType=DECIMAL},
       ASSET = #{asset,jdbcType=DECIMAL},
       UPDATETIME = sysdate
-    where TIME = #{time,jdbcType=VARCHAR}
-      and NEWID = #{newid,jdbcType=DECIMAL}
+    where NEWID = #{newid,jdbcType=DECIMAL}
   </update>
-  <select id="selectLastAsset" resultMap="BaseResultMap" >
-    select
-    <if test="distinct" >
-      distinct
-    </if>
-    'false' as QUERYID,
-    <include refid="Base_Column_List" />
-    from T_ASSET
-    where time = (select max(time) from t_asset)
-  </select>
+  <delete id="deleteAll">
+    delete from T_ASSET_RT
+  </delete>
 </mapper>
