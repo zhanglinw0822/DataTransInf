@@ -2,6 +2,9 @@ package com.zhanglin.pojo;
 
 import java.math.BigDecimal;
 
+import com.google.common.base.Objects;
+import com.zhanglin.bean.PositionRTKey;
+
 public class PositionKey {
     private BigDecimal newid;
 
@@ -32,4 +35,19 @@ public class PositionKey {
     public void setCode(String code) {
         this.code = code == null ? null : code.trim();
     }
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(code,newid);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PositionKey) {
+			PositionKey that = (PositionKey) obj;
+            return Objects.equal(code, that.code)
+                    && Objects.equal(newid, that.newid);
+        }
+        return false;
+	}
 }

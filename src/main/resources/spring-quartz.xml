@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+ 
+    <context:component-scan base-package="com.zhanglin.scheduler" />
+ 
+    <!-- For times when you need more complex processing, passing data to the scheduled job -->
+    <bean name="beginJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.zhanglin.scheduler.jobs.BeginScheduledJob" />
+        <property name="jobDataMap">  
+	        <map>  
+	            <entry key="service" value-ref="marketService" />  
+	        </map>  
+	    </property> 
+    </bean>
+    
+    <bean name="endJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.zhanglin.scheduler.jobs.EndScheduledJob" />
+        <property name="jobDataMap">  
+	        <map>  
+	            <entry key="service" value-ref="marketService" />
+	        </map>  
+	    </property> 
+    </bean>  
+ 
+    <bean id="beginTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="beginJobDetail" />
+        <property name="cronExpression" value="${begintime}" />
+    </bean>
+    
+    <bean id="endTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="endJobDetail" />
+        <property name="cronExpression" value="${endtime}" />
+    </bean>
+    
+    <!-- Scheduler factory bean to glue together jobDetails and triggers to Configure Quartz Scheduler -->
+    <bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="jobDetails">
+            <list>
+                <ref bean="beginJobDetail" />
+                <ref bean="endJobDetail" />
+            </list>
+        </property>
+ 
+        <property name="triggers">
+            <list>
+                <ref bean="beginTrigger" />
+                <ref bean="endTrigger" />
+            </list>
+        </property>
+    </bean>
+ 	<bean class="com.zhanglin.scheduler.jobs.InitJob" init-method="init">
+ 		<property name="begintime" value="${begintime}"/>
+ 		<property name="endtime" value="${endtime}"/>
+ 	</bean>
+</beans>

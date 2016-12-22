@@ -1,7 +1,10 @@
 package com.zhanglin.pojo;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.zhanglin.Constant;
 
 public class Asset extends AssetKey {
     private BigDecimal cash;
@@ -12,7 +15,17 @@ public class Asset extends AssetKey {
 
     private Date updatetime;
 
-    public BigDecimal getCash() {
+    public Asset(AssetRT assetRT) {
+		this.cash = assetRT.getCash().divide(Constant.ASSET_UNIT);
+		this.addcash = BigDecimal.ZERO;
+		this.asset = assetRT.getAsset().divide(Constant.ASSET_UNIT);
+		this.setNewid(assetRT.getNewid());
+		this.setTime(new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT).format(new Date()));
+	}
+    
+    public Asset() {
+    }
+	public BigDecimal getCash() {
         return cash;
     }
 

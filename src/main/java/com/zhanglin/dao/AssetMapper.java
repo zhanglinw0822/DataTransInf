@@ -19,4 +19,6 @@ public interface AssetMapper {
     int updateByPrimaryKeySelective(Asset record);
 
     int updateByPrimaryKey(Asset record);
+    
+    List<Asset> selectLastAsset();
 }
