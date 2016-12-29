@@ -17,9 +17,20 @@ public class EndScheduledJob extends QuartzJobBean {
 	@Override
 	protected void executeInternal(JobExecutionContext context)
 			throws JobExecutionException {
-		logger.info("准备闭市");
-		service.closeMarket();
-		logger.info("闭市成功");
+		logger.info("准备收盘");
+		try{
+			service.closeMarket();
+		}catch(Exception e){
+			logger.error("收盘失败");
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			service.closeMarket();
+		}
+		logger.info("收盘成功");
 		
 	}
 

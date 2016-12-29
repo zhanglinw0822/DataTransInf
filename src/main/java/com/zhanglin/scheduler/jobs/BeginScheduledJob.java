@@ -19,9 +19,20 @@ public class BeginScheduledJob extends QuartzJobBean {
 	@Override
 	protected void executeInternal(JobExecutionContext context)
 			throws JobExecutionException {
-		logger.info("准备开市");
-		service.openMarket();
-		logger.info("开市成功");
+		logger.info("准备开盘");
+		try{
+			service.openMarket();
+		}catch(Exception e){
+			logger.error("开盘失败");
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			service.openMarket();
+		}
+		logger.info("开盘成功");
 	}
 
 
