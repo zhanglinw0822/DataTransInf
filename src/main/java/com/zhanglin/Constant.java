@@ -8,6 +8,14 @@ public class Constant {
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 	/**
+	 * 默认编码格式
+	 */
+	public static final String DEFAULT_ENCODING = "UTF-8";
+	/**
+	 * 默认数据标志
+	 */
+	public static final String DEFAULT_DATA_FLAG = "data=";
+	/**
 	 * 交易类型-买
 	 */
 	public static final int TRADE_TYPE_BUY = 1;

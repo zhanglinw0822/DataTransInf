@@ -1,5 +1,8 @@
 package com.zhanglin.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -29,13 +32,16 @@ public class DataTransInfController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Result dataTransInfo(HttpServletRequest request){
+	public String dataTransInfo(HttpServletRequest request){
 		long now = System.currentTimeMillis();
 		Result result = new Result();
 		try{
 			MyRequestWrapper myRequestWrapper = new MyRequestWrapper((HttpServletRequest) request);
 			logger.info("接收到请求，request:"+request+",data:"+myRequestWrapper.getBody());
-	        Data data = JSON.parseObject(myRequestWrapper.getBody(),Data.class);
+			String json = URLDecoder.decode(myRequestWrapper.getBody(), Constant.DEFAULT_ENCODING);
+			//替换\r \n 特殊字符，及数据标识符
+			json = json.replaceFirst(Constant.DEFAULT_DATA_FLAG, "").replaceAll("\r", "").replaceAll("\n", "");
+	        Data data = JSON.parseObject(json,Data.class);
 	        data.setOrigJson(myRequestWrapper.getBody());
 			result.setMsguid(data.getMsguid());
 			try{
@@ -48,13 +54,19 @@ public class DataTransInfController {
 				}
 				
 			}catch(Exception e){
-				logger.error(e);
+				logger.error("error",e);
 				result.setMsgstate(Constant.RESULT_CODE_ERR);
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error("error",e);
 		}
 		logger.info("处理请求完成,耗时："+(System.currentTimeMillis()-now)+",request:"+request);
-		return result;
+		String str_result="{}";
+		try {
+			str_result = URLEncoder.encode(JSON.toJSONString(result), Constant.DEFAULT_ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			logger.error("error",e);
+		}
+		 return str_result;
 	}
 }
