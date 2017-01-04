@@ -34,7 +34,20 @@ public class Descom {
      */
     private List<PositionRT> positionRT = new ArrayList<PositionRT>();
     
-    public void setPositionRT(List<PositionRT> positionRT) {
+    /**
+     * 期初资金
+     */
+    private Asset firstAsset;
+    
+    public Asset getFirstAsset() {
+		return firstAsset;
+	}
+
+	public void setFirstAsset(Asset firstAsset) {
+		this.firstAsset = firstAsset;
+	}
+
+	public void setPositionRT(List<PositionRT> positionRT) {
 		this.positionRT = positionRT;
 		for (Iterator<PositionRT> iterator = positionRT.iterator(); iterator.hasNext();) {
 			PositionRT temp = iterator.next();

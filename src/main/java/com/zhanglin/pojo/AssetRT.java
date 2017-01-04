@@ -17,7 +17,7 @@ public class AssetRT {
 
     public AssetRT(Asset asset) {
 		this.newid = asset.getNewid();
-		this.cash = asset.getCash().add(asset.getAddcash()).multiply(Constant.ASSET_UNIT);
+		this.cash = asset.getCash().multiply(Constant.ASSET_UNIT);
 		this.asset = asset.getAsset().multiply(Constant.ASSET_UNIT);
 	}
     

@@ -12,6 +12,7 @@ import com.zhanglin.dao.DescomMapper;
 import com.zhanglin.dao.OrderMapper;
 import com.zhanglin.dao.PositionMapper;
 import com.zhanglin.dao.PositionRTMapper;
+import com.zhanglin.dao.RecordMapper;
 import com.zhanglin.pojo.AssetRT;
 import com.zhanglin.pojo.Descom;
 import com.zhanglin.pojo.DescomExample;
@@ -19,6 +20,7 @@ import com.zhanglin.pojo.Order;
 import com.zhanglin.pojo.PositionExample;
 import com.zhanglin.pojo.PositionRT;
 import com.zhanglin.pojo.PositionRTExample;
+import com.zhanglin.pojo.Record;
 import com.zhanglin.service.IDescomService;
 @Service("descomService")
 public class DescomServiceImpl implements IDescomService{
@@ -35,6 +37,8 @@ public class DescomServiceImpl implements IDescomService{
 	private PositionRTMapper positionRTDao;
 	@Resource
 	private AssetRTMapper assetRTDao;
+	@Resource
+	private RecordMapper recordDao;
 	
 	public Descom getDescom(String id) {
 		DescomExample example = new DescomExample();
@@ -52,6 +56,8 @@ public class DescomServiceImpl implements IDescomService{
 			descom.setPositionRT(positionRTDao.selectByExample(positionRTExample));
 			
 			descom.setAsset(assetRTDao.selectByPrimaryKey(descom.getNewid()));
+			
+			descom.setFirstAsset(assetDao.selectFirstAsset(descom.getNewid()));
 		}
 		return descoms.size()>0?descoms.get(0):null;
 	}
@@ -66,6 +72,10 @@ public class DescomServiceImpl implements IDescomService{
 
 	public void updateAssetRT(AssetRT asset) {
 		assetRTDao.updateByPrimaryKey(asset);
+	}
+
+	public void insertRecord(Record record) {
+		recordDao.insert(record);
 	}
 
 }

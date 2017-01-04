@@ -56,7 +56,7 @@ public class InitJob {
 				}else{
 					logger.info("status is ok,do nothing.");
 				}
-			}else if (nextCloseTime.get(Calendar.DAY_OF_MONTH) == ca
+			}else if (nextCloseTime.get(Calendar.DAY_OF_MONTH) != ca
 							.get(Calendar.DAY_OF_MONTH)) {//收盘后
 				if(Constant.SYSTEM_STATUS_OPEN.equals(status)){
 					logger.info("status is open,do close.");

@@ -36,7 +36,17 @@ public class Data {
 	 * 请求id
 	 */
 	private BigDecimal requestId;
+	/**
+	 * 净值
+	 */
+	private BigDecimal netvalue;
 	
+	public BigDecimal getNetvalue() {
+		return netvalue;
+	}
+	public void setNetvalue(BigDecimal netvalue) {
+		this.netvalue = netvalue;
+	}
 	public BigDecimal getRequestId() {
 		return requestId;
 	}

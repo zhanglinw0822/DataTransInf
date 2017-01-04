@@ -6,6 +6,8 @@
  
     <bean id="config" class="com.zhanglin.bean.Config">
 		<property name="maxWeight" value="${maxWeight}"/>
+		<property name="tempPath" value="${tempPath}"/>
+		<property name="orderFilePath" value="${orderFilePath}"/>
 	</bean>
 	<bean id="springContextUtil" class="com.zhanglin.tools.SpringContextUtil"/>
 </beans>

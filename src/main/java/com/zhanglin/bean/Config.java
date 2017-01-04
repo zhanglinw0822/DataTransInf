@@ -16,6 +16,30 @@ public class Config {
 	 * 结束时间
 	 */
 	private String endTime;
+	/**
+	 * 临时文件目录
+	 */
+	private String tempPath;
+	/**
+	 * 交易指令文件目录
+	 */
+	private String orderFilePath;
+
+	public String getTempPath() {
+		return tempPath;
+	}
+
+	public void setTempPath(String tempPath) {
+		this.tempPath = tempPath;
+	}
+
+	public String getOrderFilePath() {
+		return orderFilePath;
+	}
+
+	public void setOrderFilePath(String orderFilePath) {
+		this.orderFilePath = orderFilePath;
+	}
 
 	public BigDecimal getMaxWeight() {
 		return maxWeight;

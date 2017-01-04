@@ -3,6 +3,8 @@ package com.zhanglin.dao;
 import com.zhanglin.pojo.Asset;
 import com.zhanglin.pojo.AssetExample;
 import com.zhanglin.pojo.AssetKey;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface AssetMapper {
@@ -21,4 +23,6 @@ public interface AssetMapper {
     int updateByPrimaryKey(Asset record);
     
     List<Asset> selectLastAsset();
+    
+    Asset selectFirstAsset(BigDecimal newid);
 }

@@ -74,36 +74,6 @@ public class MarketServiceImpl implements IMarketService{
 	}
 
 	public void closeMarket() {
-		Map<PositionRTKey,List<PositionRT>> map = new HashMap<PositionRTKey, List<PositionRT>>();
-		List<PositionRT> positionRTs = positionRTDao.selectByExample(new PositionRTExample());
-		for (Iterator<PositionRT> iterator = positionRTs.iterator(); iterator.hasNext();) {
-			PositionRT positionRT = iterator.next();
-			putPosition(map,positionRT);
-		}
-		
-		List<Position> positions = positionDao.selectByExample(new PositionExample());
-		for (Iterator<PositionRTKey> iterator = map.keySet().iterator(); iterator.hasNext();) {
-			PositionRTKey key = iterator.next();
-			List<PositionRT> list = map.get(key);
-			
-			Position position = new Position();
-			position.setCode(key.getCode());
-			position.setNewid(key.getNewid());
-			position.setTime(new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT).format(new Date()));
-			position.setHoldprice(BigDecimal.ZERO);
-			position.setNum(BigDecimal.ZERO);
-			position.setClose(BigDecimal.ZERO);
-			
-			calcAverage(list, position);
-			
-			if(positions.contains(position)){
-				positionDao.updateByPrimaryKey(position);
-			}else{
-				positionDao.insert(position);
-			}
-			
-		}
-		
 		List<AssetRT> assets = assetRTDao.selectByExample(new AssetRTExample());
 		for (Iterator<AssetRT> iterator = assets.iterator(); iterator.hasNext();) {
 			AssetRT assetRT = iterator.next();
@@ -115,28 +85,6 @@ public class MarketServiceImpl implements IMarketService{
 		status.setStatus(Constant.SYSTEM_STATUS_CLOSE);
 		systemStatusDao.updateByPrimaryKeySelective(status);
 		
-	}
-
-	private void calcAverage(List<PositionRT> list, Position position) {
-		BigDecimal cost = BigDecimal.ZERO;
-		for (Iterator<PositionRT> iterator = list.iterator(); iterator.hasNext();) {
-			PositionRT positionRT = iterator.next();
-			cost = positionRT.getHoldprice().multiply(positionRT.getNum()).add(cost);
-			position.setNum(positionRT.getNum().add(position.getNum()));
-		}
-		position.setHoldprice(cost.divide(position.getNum(),3,BigDecimal.ROUND_HALF_UP));
-	}
-
-	private void putPosition(Map<PositionRTKey,List<PositionRT>> map,
-			PositionRT positionRT) {
-		PositionRTKey key = new PositionRTKey(positionRT.getCode(), positionRT.getNewid());
-		if(map.containsKey(key)){
-			map.get(key).add(positionRT);
-		}else{
-			List<PositionRT> list = new ArrayList<PositionRT>();
-			list.add(positionRT);
-			map.put(key, list);
-		}
 	}
 
 	public String getSystemStaus() {

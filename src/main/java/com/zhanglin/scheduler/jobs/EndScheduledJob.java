@@ -19,7 +19,7 @@ public class EndScheduledJob extends QuartzJobBean {
 			throws JobExecutionException {
 		logger.info("准备收盘");
 		try{
-//			service.closeMarket();
+			service.closeMarket();
 		}catch(Exception e){
 			logger.error("收盘失败");
 			try {
@@ -28,7 +28,7 @@ public class EndScheduledJob extends QuartzJobBean {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-//			service.closeMarket();
+			service.closeMarket();
 		}
 		logger.info("收盘成功");
 		

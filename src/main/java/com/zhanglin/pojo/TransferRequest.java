@@ -22,6 +22,8 @@ public class TransferRequest {
 
     private String descomid;
 
+    private BigDecimal net;
+
     public BigDecimal getId() {
         return id;
     }
@@ -92,5 +94,13 @@ public class TransferRequest {
 
     public void setDescomid(String descomid) {
         this.descomid = descomid == null ? null : descomid.trim();
+    }
+
+    public BigDecimal getNet() {
+        return net;
+    }
+
+    public void setNet(BigDecimal net) {
+        this.net = net;
     }
 }

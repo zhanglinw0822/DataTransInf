@@ -27,6 +27,7 @@ public class RequestServiceImpl implements IRequestService{
 		request.setMsguid(data.getMsguid());
 		request.setOrdertime(data.getOrdertime());
 		request.setRealtime(data.getRealtime());
+		request.setNet(data.getNetvalue());
 		request.setStatus(status);
 		requestDao.insert(request);
 		

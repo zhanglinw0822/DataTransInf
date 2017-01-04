@@ -2,17 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zhanglin.dao.OrderMapper" >
   <resultMap id="BaseResultMap" type="com.zhanglin.pojo.Order" >
+    <id column="MSGUID" property="msguid" jdbcType="OTHER" />
     <result column="ID" property="id" jdbcType="OTHER" />
-    <result column="TIME" property="time" jdbcType="VARCHAR" />
     <result column="CODE" property="code" jdbcType="VARCHAR" />
     <result column="ORDER_PRICE" property="orderPrice" jdbcType="DECIMAL" />
-    <result column="ORDER_NUM" property="orderNum" jdbcType="DECIMAL" />
     <result column="TRADETYPE" property="tradetype" jdbcType="DECIMAL" />
     <result column="ORDER_TIME" property="orderTime" jdbcType="VARCHAR" />
     <result column="DELAY" property="delay" jdbcType="DECIMAL" />
     <result column="RECVTIME" property="recvtime" jdbcType="VARCHAR" />
     <result column="NEWID" property="newid" jdbcType="DECIMAL" />
     <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="NET" property="net" jdbcType="DECIMAL" />
+    <result column="W1" property="w1" jdbcType="DECIMAL" />
+    <result column="W2" property="w2" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -44,8 +46,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    ID, TIME, CODE, ORDER_PRICE, ORDER_NUM, TRADETYPE, ORDER_TIME, DELAY, RECVTIME, NEWID, 
-    UPDATETIME
+    MSGUID, ID, CODE, ORDER_PRICE, TRADETYPE, ORDER_TIME, DELAY, RECVTIME, NEWID, UPDATETIME, 
+    NET, W1, W2
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.OrderExample" >
     select
@@ -62,33 +64,42 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Object" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_ORDER
+    where MSGUID = #{msguid,jdbcType=OTHER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Object" >
+    delete from T_ORDER
+    where MSGUID = #{msguid,jdbcType=OTHER}
+  </delete>
   <insert id="insert" parameterType="com.zhanglin.pojo.Order" >
-    insert into T_ORDER (ID, TIME, CODE, 
-      ORDER_PRICE, ORDER_NUM, TRADETYPE, 
-      ORDER_TIME, DELAY, RECVTIME, 
-      NEWID, UPDATETIME)
-    values (#{id,jdbcType=OTHER}, #{time,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
-      #{orderPrice,jdbcType=DECIMAL}, #{orderNum,jdbcType=DECIMAL}, #{tradetype,jdbcType=DECIMAL}, 
-      #{orderTime,jdbcType=VARCHAR}, #{delay,jdbcType=DECIMAL}, #{recvtime,jdbcType=VARCHAR}, 
-      #{newid,jdbcType=DECIMAL}, #{updatetime,jdbcType=TIMESTAMP})
+    insert into T_ORDER (MSGUID, ID, CODE, 
+      ORDER_PRICE, TRADETYPE, ORDER_TIME, 
+      DELAY, RECVTIME, NEWID, 
+      UPDATETIME, NET, W1, 
+      W2)
+    values (#{msguid,jdbcType=OTHER}, #{id,jdbcType=OTHER}, #{code,jdbcType=VARCHAR}, 
+      #{orderPrice,jdbcType=DECIMAL}, #{tradetype,jdbcType=DECIMAL}, #{orderTime,jdbcType=VARCHAR}, 
+      #{delay,jdbcType=DECIMAL}, #{recvtime,jdbcType=VARCHAR}, #{newid,jdbcType=DECIMAL}, 
+      sysdate, #{net,jdbcType=DECIMAL}, #{w1,jdbcType=DECIMAL}, 
+      #{w2,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.zhanglin.pojo.Order" >
     insert into T_ORDER
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="msguid != null" >
+        MSGUID,
+      </if>
       <if test="id != null" >
         ID,
-      </if>
-      <if test="time != null" >
-        TIME,
       </if>
       <if test="code != null" >
         CODE,
       </if>
       <if test="orderPrice != null" >
         ORDER_PRICE,
-      </if>
-      <if test="orderNum != null" >
-        ORDER_NUM,
       </if>
       <if test="tradetype != null" >
         TRADETYPE,
@@ -108,22 +119,28 @@
       <if test="updatetime != null" >
         UPDATETIME,
       </if>
+      <if test="net != null" >
+        NET,
+      </if>
+      <if test="w1 != null" >
+        W1,
+      </if>
+      <if test="w2 != null" >
+        W2,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="msguid != null" >
+        #{msguid,jdbcType=OTHER},
+      </if>
       <if test="id != null" >
         #{id,jdbcType=OTHER},
-      </if>
-      <if test="time != null" >
-        #{time,jdbcType=VARCHAR},
       </if>
       <if test="code != null" >
         #{code,jdbcType=VARCHAR},
       </if>
       <if test="orderPrice != null" >
         #{orderPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="orderNum != null" >
-        #{orderNum,jdbcType=DECIMAL},
       </if>
       <if test="tradetype != null" >
         #{tradetype,jdbcType=DECIMAL},
@@ -141,8 +158,75 @@
         #{newid,jdbcType=DECIMAL},
       </if>
       <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
+        sysdate,
+      </if>
+      <if test="net != null" >
+        #{net,jdbcType=DECIMAL},
+      </if>
+      <if test="w1 != null" >
+        #{w1,jdbcType=DECIMAL},
+      </if>
+      <if test="w2 != null" >
+        #{w2,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhanglin.pojo.Order" >
+    update T_ORDER
+    <set >
+      <if test="id != null" >
+        ID = #{id,jdbcType=OTHER},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="orderPrice != null" >
+        ORDER_PRICE = #{orderPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="tradetype != null" >
+        TRADETYPE = #{tradetype,jdbcType=DECIMAL},
+      </if>
+      <if test="orderTime != null" >
+        ORDER_TIME = #{orderTime,jdbcType=VARCHAR},
+      </if>
+      <if test="delay != null" >
+        DELAY = #{delay,jdbcType=DECIMAL},
+      </if>
+      <if test="recvtime != null" >
+        RECVTIME = #{recvtime,jdbcType=VARCHAR},
+      </if>
+      <if test="newid != null" >
+        NEWID = #{newid,jdbcType=DECIMAL},
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME = sysdate,
+      </if>
+      <if test="net != null" >
+        NET = #{net,jdbcType=DECIMAL},
+      </if>
+      <if test="w1 != null" >
+        W1 = #{w1,jdbcType=DECIMAL},
+      </if>
+      <if test="w2 != null" >
+        W2 = #{w2,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where MSGUID = #{msguid,jdbcType=OTHER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhanglin.pojo.Order" >
+    update T_ORDER
+    set ID = #{id,jdbcType=OTHER},
+      CODE = #{code,jdbcType=VARCHAR},
+      ORDER_PRICE = #{orderPrice,jdbcType=DECIMAL},
+      TRADETYPE = #{tradetype,jdbcType=DECIMAL},
+      ORDER_TIME = #{orderTime,jdbcType=VARCHAR},
+      DELAY = #{delay,jdbcType=DECIMAL},
+      RECVTIME = #{recvtime,jdbcType=VARCHAR},
+      NEWID = #{newid,jdbcType=DECIMAL},
+      UPDATETIME = sysdate,
+      NET = #{net,jdbcType=DECIMAL},
+      W1 = #{w1,jdbcType=DECIMAL},
+      W2 = #{w2,jdbcType=DECIMAL}
+    where MSGUID = #{msguid,jdbcType=OTHER}
+  </update>
 </mapper>

@@ -5,7 +5,6 @@
     <id column="TIME" property="time" jdbcType="VARCHAR" />
     <id column="NEWID" property="newid" jdbcType="DECIMAL" />
     <result column="CASH" property="cash" jdbcType="DECIMAL" />
-    <result column="ADDCASH" property="addcash" jdbcType="DECIMAL" />
     <result column="ASSET" property="asset" jdbcType="DECIMAL" />
     <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -39,7 +38,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    TIME, NEWID, CASH, ADDCASH, ASSET, UPDATETIME
+    TIME, NEWID, CASH, ASSET, UPDATETIME
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.AssetExample" >
     select
@@ -70,11 +69,10 @@
   </delete>
   <insert id="insert" parameterType="com.zhanglin.pojo.Asset" >
     insert into T_ASSET (TIME, NEWID, CASH, 
-      ADDCASH, ASSET, UPDATETIME
-      )
+      ASSET, UPDATETIME)
     values (#{time,jdbcType=VARCHAR}, #{newid,jdbcType=DECIMAL}, #{cash,jdbcType=DECIMAL}, 
-      #{addcash,jdbcType=DECIMAL}, #{asset,jdbcType=DECIMAL}, sysdate
-      )
+      #{asset,jdbcType=DECIMAL}, sysdate
+    )
   </insert>
   <insert id="insertSelective" parameterType="com.zhanglin.pojo.Asset" >
     insert into T_ASSET
@@ -87,9 +85,6 @@
       </if>
       <if test="cash != null" >
         CASH,
-      </if>
-      <if test="addcash != null" >
-        ADDCASH,
       </if>
       <if test="asset != null" >
         ASSET,
@@ -108,9 +103,6 @@
       <if test="cash != null" >
         #{cash,jdbcType=DECIMAL},
       </if>
-      <if test="addcash != null" >
-        #{addcash,jdbcType=DECIMAL},
-      </if>
       <if test="asset != null" >
         #{asset,jdbcType=DECIMAL},
       </if>
@@ -125,9 +117,6 @@
       <if test="cash != null" >
         CASH = #{cash,jdbcType=DECIMAL},
       </if>
-      <if test="addcash != null" >
-        ADDCASH = #{addcash,jdbcType=DECIMAL},
-      </if>
       <if test="asset != null" >
         ASSET = #{asset,jdbcType=DECIMAL},
       </if>
@@ -141,7 +130,6 @@
   <update id="updateByPrimaryKey" parameterType="com.zhanglin.pojo.Asset" >
     update T_ASSET
     set CASH = #{cash,jdbcType=DECIMAL},
-      ADDCASH = #{addcash,jdbcType=DECIMAL},
       ASSET = #{asset,jdbcType=DECIMAL},
       UPDATETIME = sysdate
     where TIME = #{time,jdbcType=VARCHAR}
@@ -156,5 +144,12 @@
     <include refid="Base_Column_List" />
     from T_ASSET
     where time = (select max(time) from t_asset)
+  </select>
+  <select id="selectFirstAsset" resultMap="BaseResultMap" parameterType="DECIMAL" >
+    select
+    <include refid="Base_Column_List" />
+    from T_ASSET
+    where time = (select min(time) from t_asset where newid = #{newid,jdbcType=DECIMAL})
+    and NEWID = #{newid,jdbcType=DECIMAL}
   </select>
 </mapper>

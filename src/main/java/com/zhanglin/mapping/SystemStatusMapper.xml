@@ -110,9 +110,7 @@
       <if test="tradedate != null" >
         TRADEDATE = #{tradedate,jdbcType=VARCHAR},
       </if>
-      <if test="updatetime != null" >
-        UPDATETIME = sysdate,
-      </if>
+        UPDATETIME = sysdate
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>

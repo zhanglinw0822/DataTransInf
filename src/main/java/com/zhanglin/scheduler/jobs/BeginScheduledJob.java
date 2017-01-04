@@ -21,7 +21,7 @@ public class BeginScheduledJob extends QuartzJobBean {
 			throws JobExecutionException {
 		logger.info("准备开盘");
 		try{
-//			service.openMarket();
+			service.openMarket();
 		}catch(Exception e){
 			logger.error("开盘失败");
 			try {
@@ -30,7 +30,7 @@ public class BeginScheduledJob extends QuartzJobBean {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-//			service.openMarket();
+			service.openMarket();
 		}
 		logger.info("开盘成功");
 	}

@@ -24,7 +24,7 @@ public class Detail {
 	/**
 	 * 交易方向,1：买，0：卖
 	 */
-	private int tradetype;
+	private int trading_type;
 	
 	public String getCode() {
 		return code;
@@ -50,17 +50,17 @@ public class Detail {
 	public void setWeight2(BigDecimal weight2) {
 		this.weight2 = weight2;
 	}
-	public int getTradetype() {
-		return tradetype;
+	public int getTrading_type() {
+		return trading_type;
 	}
-	public void setTradetype(int tradetype) {
-		this.tradetype = tradetype;
+	public void setTrading_type(int trading_type) {
+		this.trading_type = trading_type;
 	}
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("code", code)
 				.add("price", price).add("weight1", weight1)
-				.add("weight2", weight2).add("tradetype", tradetype).toString();
+				.add("weight2", weight2).add("trading_type", trading_type).toString();
 	}
 	
 }

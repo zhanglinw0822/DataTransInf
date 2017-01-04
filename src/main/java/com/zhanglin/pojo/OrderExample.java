@@ -106,6 +106,66 @@ public class OrderExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
+        public Criteria andMsguidIsNull() {
+            addCriterion("MSGUID is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidIsNotNull() {
+            addCriterion("MSGUID is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidEqualTo(Object value) {
+            addCriterion("MSGUID =", value, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidNotEqualTo(Object value) {
+            addCriterion("MSGUID <>", value, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidGreaterThan(Object value) {
+            addCriterion("MSGUID >", value, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidGreaterThanOrEqualTo(Object value) {
+            addCriterion("MSGUID >=", value, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidLessThan(Object value) {
+            addCriterion("MSGUID <", value, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidLessThanOrEqualTo(Object value) {
+            addCriterion("MSGUID <=", value, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidIn(List<Object> values) {
+            addCriterion("MSGUID in", values, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidNotIn(List<Object> values) {
+            addCriterion("MSGUID not in", values, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidBetween(Object value1, Object value2) {
+            addCriterion("MSGUID between", value1, value2, "msguid");
+            return (Criteria) this;
+        }
+
+        public Criteria andMsguidNotBetween(Object value1, Object value2) {
+            addCriterion("MSGUID not between", value1, value2, "msguid");
+            return (Criteria) this;
+        }
+
         public Criteria andIdIsNull() {
             addCriterion("ID is null");
             return (Criteria) this;
@@ -163,76 +223,6 @@ public class OrderExample {
 
         public Criteria andIdNotBetween(Object value1, Object value2) {
             addCriterion("ID not between", value1, value2, "id");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeIsNull() {
-            addCriterion("TIME is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeIsNotNull() {
-            addCriterion("TIME is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeEqualTo(String value) {
-            addCriterion("TIME =", value, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeNotEqualTo(String value) {
-            addCriterion("TIME <>", value, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeGreaterThan(String value) {
-            addCriterion("TIME >", value, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeGreaterThanOrEqualTo(String value) {
-            addCriterion("TIME >=", value, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeLessThan(String value) {
-            addCriterion("TIME <", value, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeLessThanOrEqualTo(String value) {
-            addCriterion("TIME <=", value, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeLike(String value) {
-            addCriterion("TIME like", value, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeNotLike(String value) {
-            addCriterion("TIME not like", value, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeIn(List<String> values) {
-            addCriterion("TIME in", values, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeNotIn(List<String> values) {
-            addCriterion("TIME not in", values, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeBetween(String value1, String value2) {
-            addCriterion("TIME between", value1, value2, "time");
-            return (Criteria) this;
-        }
-
-        public Criteria andTimeNotBetween(String value1, String value2) {
-            addCriterion("TIME not between", value1, value2, "time");
             return (Criteria) this;
         }
 
@@ -363,66 +353,6 @@ public class OrderExample {
 
         public Criteria andOrderPriceNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("ORDER_PRICE not between", value1, value2, "orderPrice");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumIsNull() {
-            addCriterion("ORDER_NUM is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumIsNotNull() {
-            addCriterion("ORDER_NUM is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumEqualTo(BigDecimal value) {
-            addCriterion("ORDER_NUM =", value, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumNotEqualTo(BigDecimal value) {
-            addCriterion("ORDER_NUM <>", value, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumGreaterThan(BigDecimal value) {
-            addCriterion("ORDER_NUM >", value, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumGreaterThanOrEqualTo(BigDecimal value) {
-            addCriterion("ORDER_NUM >=", value, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumLessThan(BigDecimal value) {
-            addCriterion("ORDER_NUM <", value, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumLessThanOrEqualTo(BigDecimal value) {
-            addCriterion("ORDER_NUM <=", value, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumIn(List<BigDecimal> values) {
-            addCriterion("ORDER_NUM in", values, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumNotIn(List<BigDecimal> values) {
-            addCriterion("ORDER_NUM not in", values, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("ORDER_NUM between", value1, value2, "orderNum");
-            return (Criteria) this;
-        }
-
-        public Criteria andOrderNumNotBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("ORDER_NUM not between", value1, value2, "orderNum");
             return (Criteria) this;
         }
 
@@ -803,6 +733,186 @@ public class OrderExample {
 
         public Criteria andUpdatetimeNotBetween(Date value1, Date value2) {
             addCriterion("UPDATETIME not between", value1, value2, "updatetime");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetIsNull() {
+            addCriterion("NET is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetIsNotNull() {
+            addCriterion("NET is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetEqualTo(BigDecimal value) {
+            addCriterion("NET =", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetNotEqualTo(BigDecimal value) {
+            addCriterion("NET <>", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetGreaterThan(BigDecimal value) {
+            addCriterion("NET >", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetGreaterThanOrEqualTo(BigDecimal value) {
+            addCriterion("NET >=", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetLessThan(BigDecimal value) {
+            addCriterion("NET <", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetLessThanOrEqualTo(BigDecimal value) {
+            addCriterion("NET <=", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetIn(List<BigDecimal> values) {
+            addCriterion("NET in", values, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetNotIn(List<BigDecimal> values) {
+            addCriterion("NET not in", values, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("NET between", value1, value2, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetNotBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("NET not between", value1, value2, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1IsNull() {
+            addCriterion("W1 is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1IsNotNull() {
+            addCriterion("W1 is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1EqualTo(BigDecimal value) {
+            addCriterion("W1 =", value, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1NotEqualTo(BigDecimal value) {
+            addCriterion("W1 <>", value, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1GreaterThan(BigDecimal value) {
+            addCriterion("W1 >", value, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1GreaterThanOrEqualTo(BigDecimal value) {
+            addCriterion("W1 >=", value, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1LessThan(BigDecimal value) {
+            addCriterion("W1 <", value, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1LessThanOrEqualTo(BigDecimal value) {
+            addCriterion("W1 <=", value, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1In(List<BigDecimal> values) {
+            addCriterion("W1 in", values, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1NotIn(List<BigDecimal> values) {
+            addCriterion("W1 not in", values, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1Between(BigDecimal value1, BigDecimal value2) {
+            addCriterion("W1 between", value1, value2, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW1NotBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("W1 not between", value1, value2, "w1");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2IsNull() {
+            addCriterion("W2 is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2IsNotNull() {
+            addCriterion("W2 is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2EqualTo(BigDecimal value) {
+            addCriterion("W2 =", value, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2NotEqualTo(BigDecimal value) {
+            addCriterion("W2 <>", value, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2GreaterThan(BigDecimal value) {
+            addCriterion("W2 >", value, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2GreaterThanOrEqualTo(BigDecimal value) {
+            addCriterion("W2 >=", value, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2LessThan(BigDecimal value) {
+            addCriterion("W2 <", value, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2LessThanOrEqualTo(BigDecimal value) {
+            addCriterion("W2 <=", value, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2In(List<BigDecimal> values) {
+            addCriterion("W2 in", values, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2NotIn(List<BigDecimal> values) {
+            addCriterion("W2 not in", values, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2Between(BigDecimal value1, BigDecimal value2) {
+            addCriterion("W2 between", value1, value2, "w2");
+            return (Criteria) this;
+        }
+
+        public Criteria andW2NotBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("W2 not between", value1, value2, "w2");
             return (Criteria) this;
         }
     }

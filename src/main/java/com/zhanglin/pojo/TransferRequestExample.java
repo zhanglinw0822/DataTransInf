@@ -705,6 +705,66 @@ public class TransferRequestExample {
             addCriterion("DESCOMID not between", value1, value2, "descomid");
             return (Criteria) this;
         }
+
+        public Criteria andNetIsNull() {
+            addCriterion("NET is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetIsNotNull() {
+            addCriterion("NET is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetEqualTo(BigDecimal value) {
+            addCriterion("NET =", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetNotEqualTo(BigDecimal value) {
+            addCriterion("NET <>", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetGreaterThan(BigDecimal value) {
+            addCriterion("NET >", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetGreaterThanOrEqualTo(BigDecimal value) {
+            addCriterion("NET >=", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetLessThan(BigDecimal value) {
+            addCriterion("NET <", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetLessThanOrEqualTo(BigDecimal value) {
+            addCriterion("NET <=", value, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetIn(List<BigDecimal> values) {
+            addCriterion("NET in", values, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetNotIn(List<BigDecimal> values) {
+            addCriterion("NET not in", values, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("NET between", value1, value2, "net");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetNotBetween(BigDecimal value1, BigDecimal value2) {
+            addCriterion("NET not between", value1, value2, "net");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

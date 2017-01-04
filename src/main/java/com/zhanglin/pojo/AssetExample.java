@@ -296,66 +296,6 @@ public class AssetExample {
             return (Criteria) this;
         }
 
-        public Criteria andAddcashIsNull() {
-            addCriterion("ADDCASH is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashIsNotNull() {
-            addCriterion("ADDCASH is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashEqualTo(BigDecimal value) {
-            addCriterion("ADDCASH =", value, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashNotEqualTo(BigDecimal value) {
-            addCriterion("ADDCASH <>", value, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashGreaterThan(BigDecimal value) {
-            addCriterion("ADDCASH >", value, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashGreaterThanOrEqualTo(BigDecimal value) {
-            addCriterion("ADDCASH >=", value, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashLessThan(BigDecimal value) {
-            addCriterion("ADDCASH <", value, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashLessThanOrEqualTo(BigDecimal value) {
-            addCriterion("ADDCASH <=", value, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashIn(List<BigDecimal> values) {
-            addCriterion("ADDCASH in", values, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashNotIn(List<BigDecimal> values) {
-            addCriterion("ADDCASH not in", values, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("ADDCASH between", value1, value2, "addcash");
-            return (Criteria) this;
-        }
-
-        public Criteria andAddcashNotBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("ADDCASH not between", value1, value2, "addcash");
-            return (Criteria) this;
-        }
-
         public Criteria andAssetIsNull() {
             addCriterion("ASSET is null");
             return (Criteria) this;
