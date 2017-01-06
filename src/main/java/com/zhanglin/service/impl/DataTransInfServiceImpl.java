@@ -195,15 +195,15 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	 */
 	private boolean checkRisk(Detail detail) {
 		
-		if(detail.getWeight2().compareTo(config.getMaxWeight())>0){
-			detail.setWeight2(config.getMaxWeight());
-			logger.info("请求数据:"+detail+",权重大于"+config.getMaxWeight().multiply(new BigDecimal(100))+",设置为最大权重");
-		}
-		
-		//TODO 判断是否为ST股票
-		if(detail.getCode()==null){
-			return false;
-		}
+//		if(detail.getWeight2().compareTo(config.getMaxWeight())>0){
+//			detail.setWeight2(config.getMaxWeight());
+//			logger.info("请求数据:"+detail+",权重大于"+config.getMaxWeight().multiply(new BigDecimal(100))+",设置为最大权重");
+//		}
+//		
+//		//TODO 判断是否为ST股票
+//		if(detail.getCode()==null){
+//			return false;
+//		}
 		return true;
 	}
 
