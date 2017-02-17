@@ -11,8 +11,18 @@ public class Position extends PositionKey {
     private BigDecimal close;
 
     private Date updatetime;
+    
+    private String windCode;
 
-    public BigDecimal getHoldprice() {
+    public String getWindCode() {
+		return windCode;
+	}
+
+	public void setWindCode(String windCode) {
+		this.windCode = windCode;
+	}
+
+	public BigDecimal getHoldprice() {
         return holdprice;
     }
 

@@ -13,13 +13,24 @@ public class PositionRT {
     private BigDecimal newid;
 
     private Date updatetime;
+    
+    private String windCode;
 
-    public PositionRT(Position position) {
+    public String getWindCode() {
+		return windCode;
+	}
+
+	public void setWindCode(String windCode) {
+		this.windCode = windCode;
+	}
+
+	public PositionRT(Position position) {
     	this.code = position.getCode();
     	this.holdprice = position.getHoldprice();
     	this.num = position.getNum();
     	this.newid = position.getNewid();
     	this.updatetime = position.getUpdatetime();
+    	this.windCode = position.getWindCode();
 	}
     
     public PositionRT(){

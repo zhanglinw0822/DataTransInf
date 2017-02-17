@@ -28,9 +28,9 @@ public class Constant {
 	 */
 	public static final BigDecimal POSITION_MULTIPLE = new BigDecimal(100);
 	/**
-	 * 金额单位-万元
+	 * 权重-百分数
 	 */
-	public static final BigDecimal ASSET_UNIT = new BigDecimal(10000);
+	public static final BigDecimal WEIGHT_MULTIPLE = new BigDecimal(100);
 	/**
 	 * 处理结果-成功
 	 */

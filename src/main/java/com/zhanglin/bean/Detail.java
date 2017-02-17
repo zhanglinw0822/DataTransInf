@@ -27,7 +27,7 @@ public class Detail {
 	private int trading_type;
 	
 	public String getCode() {
-		return code;
+		return code==null?null:code.toUpperCase();
 	}
 	public void setCode(String code) {
 		this.code = code;

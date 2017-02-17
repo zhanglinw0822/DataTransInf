@@ -14,8 +14,8 @@ public class Asset extends AssetKey {
     private Date updatetime;
     
     public Asset(AssetRT assetRT) {
-		this.cash = assetRT.getCash().divide(Constant.ASSET_UNIT);
-		this.asset = assetRT.getAsset().divide(Constant.ASSET_UNIT);
+		this.cash = assetRT.getCash();
+		this.asset = assetRT.getAsset();
 		this.setNewid(assetRT.getNewid());
 		this.setTime(new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT).format(new Date()));
 	}

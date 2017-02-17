@@ -8,6 +8,7 @@
     <result column="HOLDPRICE" property="holdprice" jdbcType="DECIMAL" />
     <result column="NUM" property="num" jdbcType="DECIMAL" />
     <result column="CLOSE" property="close" jdbcType="DECIMAL" />
+    <result column="WINDCODE" property="windCode" jdbcType="VARCHAR" />
     <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -159,4 +160,7 @@
   <delete id="deleteAll">
     delete from T_CC
   </delete>
+  <select id="getHolding" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.Position">
+    select * from HOLDING_VW where newid=#{newid,jdbcType=DECIMAL} and time=#{time,jdbcType=VARCHAR}
+  </select>
 </mapper>

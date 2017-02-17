@@ -1,10 +1,10 @@
 package com.zhanglin.cache;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -32,13 +32,22 @@ public class CacheManager {
 				}
 
 			});
+	private LoadingCache<String, Map<String,String>> STCodes = CacheBuilder.newBuilder()
+			.expireAfterWrite(1, TimeUnit.DAYS)
+			.build(new CacheLoader<String, Map<String,String>>() {
+				@Override
+				public Map<String,String> load(String key) throws Exception {
+					return loadSTCodes();
+				}
+
+			});
 	
 	private static CacheManager instance=null;  
 	
 	private CacheManager(){
 		
 	}
-	
+
 	public static CacheManager getInstance(){
 		if(instance==null){
 			synchronized (CacheManager.class) {
@@ -63,6 +72,11 @@ public class CacheManager {
 		return marketService.getSystemStaus();
 	}
 	
+
+	private Map<String,String> loadSTCodes() {
+		return marketService.getSTCodes();
+	}
+	
 	public Descom getDescom(String id){
 		try {
 			Descom descom = descoms.get(id);
@@ -79,6 +93,15 @@ public class CacheManager {
 			String systemStatus = status.get("status");
 			logger.info("缓存中数据："+status.asMap());
 			return systemStatus;
+		} catch (Exception e) {
+			logger.error("获取系统状态失败", e);
+			return null;
+		}
+	}
+	
+	public Map<String,String> getSTCode(){
+		try {
+			return STCodes.get("ST");
 		} catch (Exception e) {
 			logger.error("获取系统状态失败", e);
 			return null;

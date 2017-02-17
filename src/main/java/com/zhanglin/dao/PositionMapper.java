@@ -21,4 +21,6 @@ public interface PositionMapper {
     int updateByPrimaryKey(Position record);
     
     int deleteAll();
+    
+    List<Position> getHolding(Position position);
 }

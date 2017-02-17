@@ -1,5 +1,7 @@
 package com.zhanglin.service;
 
+import java.util.Map;
+
 
 
 
@@ -16,4 +18,9 @@ public interface IMarketService {
 	 * 获取市场状态
 	 */
 	public String getSystemStaus();
+	/**
+	 * 获取ST股票
+	 * @return 
+	 */
+	public Map<String, String> getSTCodes();
 }

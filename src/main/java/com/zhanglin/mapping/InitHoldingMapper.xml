@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zhanglin.dao.PositionRTMapper" >
-  <resultMap id="BaseResultMap" type="com.zhanglin.pojo.PositionRT" >
+<mapper namespace="com.zhanglin.dao.InitHoldingMapper" >
+  <resultMap id="BaseResultMap" type="com.zhanglin.pojo.InitHolding" >
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="CURDATE" property="curdate" jdbcType="VARCHAR" />
     <result column="CODE" property="code" jdbcType="VARCHAR" />
-    <result column="HOLDPRICE" property="holdprice" jdbcType="DECIMAL" />
-    <result column="NUM" property="num" jdbcType="DECIMAL" />
+    <result column="WEIGHT" property="weight" jdbcType="DECIMAL" />
+    <result column="NET" property="net" jdbcType="DECIMAL" />
     <result column="NEWID" property="newid" jdbcType="DECIMAL" />
-    <result column="WINDCODE" property="windCode" jdbcType="VARCHAR" />
-    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="VOLUME" property="volume" jdbcType="DECIMAL" />
+    <result column="CLOSEPRICE" property="closeprice" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -39,16 +41,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    CODE, HOLDPRICE, NUM, NEWID, UPDATETIME, WINDCODE
+    ID, CURDATE, CODE, WEIGHT, NET, NEWID, VOLUME, CLOSEPRICE
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.PositionRTExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.InitHoldingExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     'false' as QUERYID,
     <include refid="Base_Column_List" />
-    from T_CC_RT
+    from INIT_HOLDING
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -56,50 +58,67 @@
       order by ${orderByClause}
     </if>
   </select>
-  <insert id="insert" parameterType="com.zhanglin.pojo.PositionRT" >
-    insert into T_CC_RT (CODE, HOLDPRICE, NUM, 
-      NEWID, UPDATETIME, WINDCODE)
-    values (#{code,jdbcType=VARCHAR}, #{holdprice,jdbcType=DECIMAL}, #{num,jdbcType=DECIMAL}, 
-      #{newid,jdbcType=DECIMAL}, sysdate, #{windCode,jdbcType=VARCHAR})
+  <insert id="insert" parameterType="com.zhanglin.pojo.InitHolding" >
+    insert into INIT_HOLDING (ID, CURDATE, CODE, 
+      WEIGHT, NET, NEWID, 
+      VOLUME, CLOSEPRICE)
+    values (#{id,jdbcType=VARCHAR}, #{curdate,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{weight,jdbcType=DECIMAL}, #{net,jdbcType=DECIMAL}, #{newid,jdbcType=DECIMAL}, 
+      #{volume,jdbcType=DECIMAL}, #{closeprice,jdbcType=DECIMAL})
   </insert>
-  <insert id="insertSelective" parameterType="com.zhanglin.pojo.PositionRT" >
-    insert into T_CC_RT
+  <insert id="insertSelective" parameterType="com.zhanglin.pojo.InitHolding" >
+    insert into INIT_HOLDING
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="curdate != null" >
+        CURDATE,
+      </if>
       <if test="code != null" >
         CODE,
       </if>
-      <if test="holdprice != null" >
-        HOLDPRICE,
+      <if test="weight != null" >
+        WEIGHT,
       </if>
-      <if test="num != null" >
-        NUM,
+      <if test="net != null" >
+        NET,
       </if>
       <if test="newid != null" >
         NEWID,
       </if>
-      <if test="updatetime != null" >
-        UPDATETIME,
+      <if test="volume != null" >
+        VOLUME,
+      </if>
+      <if test="closeprice != null" >
+        CLOSEPRICE,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="curdate != null" >
+        #{curdate,jdbcType=VARCHAR},
+      </if>
       <if test="code != null" >
         #{code,jdbcType=VARCHAR},
       </if>
-      <if test="holdprice != null" >
-        #{holdprice,jdbcType=DECIMAL},
+      <if test="weight != null" >
+        #{weight,jdbcType=DECIMAL},
       </if>
-      <if test="num != null" >
-        #{num,jdbcType=DECIMAL},
+      <if test="net != null" >
+        #{net,jdbcType=DECIMAL},
       </if>
       <if test="newid != null" >
         #{newid,jdbcType=DECIMAL},
       </if>
-      <if test="updatetime != null" >
-        sysdate,
+      <if test="volume != null" >
+        #{volume,jdbcType=DECIMAL},
+      </if>
+      <if test="closeprice != null" >
+        #{closeprice,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
-  <delete id="deleteAll">
-    delete from T_CC_RT
-  </delete>
 </mapper>

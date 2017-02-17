@@ -6,7 +6,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 
+import org.apache.log4j.Logger;
+
+import com.zhanglin.controller.DataTransInfController;
+
 public class FileTools {
+	private static Logger logger = Logger.getLogger(FileTools.class);  
 	public static void copy(String filename,String sourcepath,String targetpath) throws Exception{
 		Path source = FileSystems.getDefault().getPath(sourcepath).resolve(filename);
 		Path target = FileSystems.getDefault().getPath(targetpath);
@@ -15,6 +20,8 @@ public class FileTools {
 				Files.createDirectories(target);
 			}
 			Files.copy(source, target.resolve(filename),StandardCopyOption.REPLACE_EXISTING);
+		}else{
+			logger.info("指令文件"+source+"不存在！");
 		}
 	}
 	

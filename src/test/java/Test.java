@@ -17,15 +17,12 @@ public class Test {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		FileName filename = new FileName();
-		filename.setNewid(BigDecimal.ONE.toString());
-		filename.setOrdertime("2016-09-28");
-		filename.setRealtime("1023");
-		System.out.println(filename);
-		
-		Path path = FileSystems.getDefault().getPath(filename.toString());
-		Files.write(path, "0|600889|B||LIMIT|T5|0|2000\r\n".getBytes(),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
-		Files.write(path, "0|600889|S||LIMIT|T5|0|2000\r\n".getBytes(),StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+		String temp = "SH600987".substring(2, 3);
+		System.out.println(temp);
+		temp = "SH600987".substring(0, 2);
+		System.out.println(temp);
+		temp = "SH600987".substring(2);
+		System.out.println(temp);
 	}
 
 }

@@ -116,8 +116,8 @@ public class DataTransInfController {
 				return false;
 			}
 			if (detail.getCode().length() != 8
-					|| (!detail.getCode().toLowerCase().startsWith("sh") && !detail
-							.getCode().toLowerCase().startsWith("sz"))) {
+					|| (!detail.getCode().toUpperCase().startsWith("SH") && !detail
+							.getCode().toUpperCase().startsWith("SZ"))) {
 				logger.info("请求格式验证未通过,股票代码格式错误,detail="+detail);
 				return false;
 			}

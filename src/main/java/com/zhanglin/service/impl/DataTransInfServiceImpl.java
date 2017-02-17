@@ -1,7 +1,11 @@
 package com.zhanglin.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -104,7 +108,8 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		//插入record数据
 		Record record = new Record(detail,data);
 		record.setNewid(descom.getNewid());
-		record.setNum(changePosition);
+		//Num:交易数量，当为买入时，num应该是负值，卖出时num为正值。
+		record.setNum(detail.getTrading_type()==Constant.TRADE_TYPE_BUY?changePosition.negate():changePosition);
 		service.insertRecord(record);
 		//买入持仓为正，卖出持仓为负
 		BigDecimal num = detail.getTrading_type()==Constant.TRADE_TYPE_BUY?changePosition:changePosition.negate();
@@ -161,20 +166,25 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			asset.setAsset(BigDecimal.ZERO);
 		}
 		BigDecimal price = detail.getPrice();
-		//分子=(调仓后权重-调仓前权重)*总资产的平方
-		BigDecimal numerator = detail.getWeight2().subtract(detail.getWeight1()).multiply(asset.getAsset().pow(2));
+		//分子=(调仓前权重/100 - 调仓后权重/100)*总资产的平方
+		BigDecimal numerator = detail.getWeight1().divide(Constant.WEIGHT_MULTIPLE).subtract(detail.getWeight2().divide(Constant.WEIGHT_MULTIPLE)).multiply(asset.getAsset().pow(2));
 		//分母=期初总资产*调仓瞬时净值*委托价格
-		//期初总资产此处取出来单位为万元
-		BigDecimal denominator = descom.getFirstAsset().getAsset().multiply(Constant.ASSET_UNIT).multiply(net).multiply(price);
+		BigDecimal denominator = descom.getFirstAsset().getAsset().multiply(net).multiply(price);
 		//数量=分子/分母;(100的整数倍，向下取整, 不足100为0)
 		changePosition = numerator.divide(denominator.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_DOWN).multiply(Constant.POSITION_MULTIPLE);
 		
 		//买入指令
 		if(detail.getTrading_type()==Constant.TRADE_TYPE_BUY){
-			BigDecimal needAsset = changePosition.multiply(price);
+			//买入数量=(数量)A的绝对值;
+			BigDecimal buyPosition = changePosition.abs();
+			//买入理论资金=买入数量*委托价格
+			BigDecimal needAsset = buyPosition.multiply(price);
 			//买入需要资金大于可以资金，买入数量=cash/委托价格, (100的整数倍，向下取整, 不足100为0)
 			if(needAsset.compareTo(asset.getCash())==1){
 				changePosition = asset.getCash().divide(price.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_DOWN).multiply(Constant.POSITION_MULTIPLE);
+			}else{
+				//买入理论资金<=cash,实际买入数量=买入数量
+				changePosition = buyPosition;
 			}
 		}
 		
@@ -183,6 +193,16 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			//未持仓，不做交易
 			if(positionAccount.compareTo(BigDecimal.ZERO)!=1){
 				changePosition = BigDecimal.ZERO; 
+			}else{
+				//调仓后权重==0,实际卖出数量=持仓数量
+				if(detail.getWeight2().compareTo(BigDecimal.ZERO)==0){
+					changePosition = positionAccount;
+				}else{
+					//卖出数量=(数量)A的绝对值
+					BigDecimal sellPosition = changePosition.abs();
+					//实际卖出数量=min(持仓数量，卖出数量);
+					changePosition = sellPosition.compareTo(positionAccount)==-1?sellPosition:positionAccount;
+				}
 			}
 		}
 		return changePosition;
@@ -190,21 +210,23 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 
 	/**
 	 * 风控检查
-	 * 1.单只个股权调仓后最大权重不超过30%,超过就按30%算;2.非st.
+	 * 1.非st;2.只交易6或0或3开头的
 	 * @param descom
 	 */
 	private boolean checkRisk(Detail detail) {
-		
-//		if(detail.getWeight2().compareTo(config.getMaxWeight())>0){
-//			detail.setWeight2(config.getMaxWeight());
-//			logger.info("请求数据:"+detail+",权重大于"+config.getMaxWeight().multiply(new BigDecimal(100))+",设置为最大权重");
-//		}
-//		
-//		//TODO 判断是否为ST股票
-//		if(detail.getCode()==null){
-//			return false;
-//		}
+		String windCode = generateWindCode(detail.getCode());
+		//判断是否为ST股票
+		if(CacheManager.getInstance().getSTCode().containsKey(windCode)){
+			return false;
+		}
+		String beginCode = detail.getCode().substring(2, 3);
+		if(!(beginCode.equals("0")||beginCode.equals("3")||beginCode.equals("6"))){
+			return false;
+		}
 		return true;
+	}
+	private String generateWindCode(String code) {
+		return code.substring(2)+"."+code.substring(0, 2);
 	}
 
 }

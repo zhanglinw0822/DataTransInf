@@ -136,20 +136,9 @@
       and NEWID = #{newid,jdbcType=DECIMAL}
   </update>
   <select id="selectLastAsset" resultMap="BaseResultMap" >
-    select
-    <if test="distinct" >
-      distinct
-    </if>
-    'false' as QUERYID,
-    <include refid="Base_Column_List" />
-    from T_ASSET
-    where time = (select max(time) from t_asset)
+    select * from asset_last
   </select>
   <select id="selectFirstAsset" resultMap="BaseResultMap" parameterType="DECIMAL" >
-    select
-    <include refid="Base_Column_List" />
-    from T_ASSET
-    where time = (select min(time) from t_asset where newid = #{newid,jdbcType=DECIMAL})
-    and NEWID = #{newid,jdbcType=DECIMAL}
+    select * from asset_first t where t.newid =  #{newid,jdbcType=DECIMAL}
   </select>
 </mapper>
