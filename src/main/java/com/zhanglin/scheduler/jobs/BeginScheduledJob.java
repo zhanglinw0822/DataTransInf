@@ -23,7 +23,7 @@ public class BeginScheduledJob extends QuartzJobBean {
 		try{
 			service.openMarket();
 		}catch(Exception e){
-			logger.error("开盘失败");
+			logger.error("开盘失败",e);
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e1) {

@@ -1,12 +1,5 @@
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-
-import com.zhanglin.bean.FileName;
-import com.zhanglin.bean.Trade;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 
@@ -16,13 +9,12 @@ public class Test {
 		
 	}
 	
-	public static void main(String[] args) throws IOException {
-		String temp = "SH600987".substring(2, 3);
-		System.out.println(temp);
-		temp = "SH600987".substring(0, 2);
-		System.out.println(temp);
-		temp = "SH600987".substring(2);
-		System.out.println(temp);
+	public static void main(String[] args) throws Exception {
+		String time = "2012-8-21 16:16:23.234";
+		Date date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS").parse(time);
+		System.out.println(new SimpleDateFormat("yyyyMMdd").format(date));
+		System.out.println(new SimpleDateFormat("HHmm").format(date));
+		System.out.println(date);
 	}
 
 }

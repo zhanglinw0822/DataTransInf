@@ -8,6 +8,7 @@
     <result column="NEWID" property="newid" jdbcType="DECIMAL" />
     <result column="WINDCODE" property="windCode" jdbcType="VARCHAR" />
     <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="SOURCE" property="source" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -39,7 +40,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    CODE, HOLDPRICE, NUM, NEWID, UPDATETIME, WINDCODE
+    CODE, HOLDPRICE, NUM, NEWID, UPDATETIME, WINDCODE, SOURCE
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.PositionRTExample" >
     select
@@ -58,9 +59,9 @@
   </select>
   <insert id="insert" parameterType="com.zhanglin.pojo.PositionRT" >
     insert into T_CC_RT (CODE, HOLDPRICE, NUM, 
-      NEWID, UPDATETIME, WINDCODE)
+      NEWID, UPDATETIME, WINDCODE, SOURCE)
     values (#{code,jdbcType=VARCHAR}, #{holdprice,jdbcType=DECIMAL}, #{num,jdbcType=DECIMAL}, 
-      #{newid,jdbcType=DECIMAL}, sysdate, #{windCode,jdbcType=VARCHAR})
+      #{newid,jdbcType=DECIMAL}, sysdate, #{windCode,jdbcType=VARCHAR}, #{source,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.zhanglin.pojo.PositionRT" >
     insert into T_CC_RT

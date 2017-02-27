@@ -2,6 +2,7 @@ package com.zhanglin.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.zhanglin.cache.DataManager;
 import com.zhanglin.pojo.AssetRT;
 import com.zhanglin.pojo.Descom;
 import com.zhanglin.pojo.Order;
+import com.zhanglin.pojo.PositionRT;
 import com.zhanglin.pojo.Record;
 import com.zhanglin.service.IDataTransInfService;
 import com.zhanglin.service.IDescomService;
@@ -45,45 +47,73 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		reqService.insertRequest(data,Constant.REQUEST_STATUS_PENDING);
 		DataManager.getInstance().addData(data);
 	}
-	@Transactional(rollbackFor=Exception.class)
 	public void dataTransInfo(Data data) throws Exception{
 		long now = System.currentTimeMillis();
 		logger.info("开始处理数据,requestid:"+data.getRequestId().intValue()+",data:"+data);
 		if(reqService.getRequest(data)==null){
-			Descom descom = CacheManager.getInstance().getDescom(data.getId());
-			try{
-				if(descom!=null&&descom.getIstrue().compareTo(BigDecimal.ONE)==0){
-					//清除指令文件，避免脏数据
-					String filename = getFileName(descom, data);
-					FileTools.delete(filename, config.getTempPath());
-					for (Iterator<Detail> iterator = data.getDetails().iterator(); iterator.hasNext();) {
-						Detail detail = iterator.next();
-						if(checkRisk(detail)){
-							BigDecimal changePosition = generatePosition(descom,detail,data.getNetvalue());
-							if(changePosition.compareTo(BigDecimal.ZERO)==1){
-								generateOrder(descom,detail,changePosition,data);
-							}else{
-								logger.info("需交易数量为0，不做处理,detail:"+detail);
-							}
-						}
-					}
-					FileTools.copy(filename, config.getTempPath(), config.getOrderFilePath());
-				}else{
-					logger.info("未找到对应组合，不做处理,id:"+data.getId());
-				}
-				reqService.updateRequest(data,Constant.REQUEST_STATUS_SUCESS);
-			}catch(Exception e){
-				logger.error("生成交易指令异常，事务回滚。");
-				cacheRollBack(descom);
-				throw e;
-			}
+			handleData(data,true);
 		}else{
 			reqService.updateRequest(data,Constant.REQUEST_STATUS_IGNOER);
 			logger.info("重复请求,requestid:"+data.getRequestId().intValue()+",data:"+data);
 		}
 		logger.info("数据处理完成,耗时:"+(System.currentTimeMillis()-now)+",requestid:"+data.getRequestId().intValue()+",data:"+data);
 	}
+	/**
+	 * @param data 数据
+	 * @param isFromInterface 是否为接口数据
+	 * @throws Exception
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	public void handleData(Data data,boolean isFromInterface) throws Exception {
+		if(data.getId().equals("9cfff1deceedbc287c465f7ca5edd5d6")){
+			System.out.println(data);
+		}
+		Descom descom = CacheManager.getInstance().getDescom(data.getId());
+		try{
+			if(descom!=null&&descom.getIstrue().compareTo(BigDecimal.ONE)==0){
+				//清除指令文件，避免脏数据
+				String filename = getFileName(descom, data);
+				FileTools.delete(filename, config.getTempPath());
+				for (Iterator<Detail> iterator = data.getDetails().iterator(); iterator.hasNext();) {
+					Detail detail = iterator.next();
+					if(checkRisk(detail)){
+						//该股票是否为初始化持仓中的股票
+						boolean isInitHolding = false;
+						if(isFromInterface){
+							isInitHolding = isInitHolding(detail,descom.getNewid());
+						}
+						logger.info("isInitHolding="+isInitHolding);
+						BigDecimal changePosition = generatePosition(descom,detail,data.getNetvalue(),isInitHolding);
+						if(changePosition.compareTo(BigDecimal.ZERO)==1){
+							if(isFromInterface){
+								generateOrder(descom,detail,changePosition,data,isInitHolding);
+							}else{
+								//如果是处理初始化持仓中，需要减去本日卖出的数量，卖出持仓本身就为负数
+								logger.info(detail.getCode()+"本日卖出数量为："+descom.getInitHoldCodeAccount(detail.getCode()));
+								generateOrder(descom,detail,changePosition.add(descom.getInitHoldCodeAccount(detail.getCode())),data,isInitHolding);
+							}
+						}else{
+							logger.info("需交易数量为0，不做处理,detail:"+detail);
+						}
+					}
+				}
+				FileTools.copy(filename, config.getTempPath(), config.getOrderFilePath());
+			}else{
+				logger.info("未找到对应组合，不做处理,id:"+data.getId());
+			}
+			if(isFromInterface)
+				reqService.updateRequest(data,Constant.REQUEST_STATUS_SUCESS);
+		}catch(Exception e){
+			logger.error("生成交易指令异常，事务回滚。");
+			cacheRollBack(descom);
+			throw e;
+		}
+	}
 
+	private boolean isInitHolding(Detail detail, BigDecimal newId) {
+		//key为股票代码_newid
+		return CacheManager.getInstance().getInitHolding().containsKey(detail.getCode()+"_"+newId.intValue());
+	}
 	private String getFileName(Descom descom, Data data) {
 		FileName filename = new FileName();
 		filename.setNewid(descom.getNewid().toString());
@@ -97,10 +127,38 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	 * 生成交易指令
 	 * @param newId 
 	 * @param detail
+	 * @param isInitHolding 
 	 * @param num
 	 * @throws Exception 
 	 */
-	private void generateOrder(Descom descom, Detail detail, BigDecimal changePosition,Data data) throws Exception {
+	private void generateOrder(Descom descom, Detail detail, BigDecimal changePosition,Data data, boolean isInitHolding) throws Exception {
+		if(isInitHolding&&detail.getTrading_type()==Constant.TRADE_TYPE_SELL){
+			generateInitOrder(descom, detail, changePosition, data);
+		}else{
+			generateCommonOrder(descom, detail, changePosition, data);
+		}
+	}
+	private void generateInitOrder(Descom descom, Detail detail,
+			BigDecimal changePosition, Data data) {
+		//买入持仓为正，卖出持仓为负
+		BigDecimal num = detail.getTrading_type()==Constant.TRADE_TYPE_BUY?changePosition:changePosition.negate();
+		//更新持仓信息
+		PositionRT position = new PositionRT();
+		position.setCode(detail.getCode());
+		position.setHoldprice(detail.getPrice());
+		position.setNewid(descom.getNewid());
+		position.setNum(num);
+		position.setUpdatetime(new Date());
+		position.setSource(Constant.POSITION_SOURCE_INITHOLDING);
+		updatePositionRT(descom, position);
+	}
+	private void updatePositionRT(Descom descom, PositionRT position) {
+		service.updatePositionRT(position);
+		//更新内存中的持仓数据
+		descom.addPosition(position);
+	}
+	private void generateCommonOrder(Descom descom, Detail detail,
+			BigDecimal changePosition, Data data) throws Exception {
 		//插入交易信息
 		Order order =new Order(detail,data);
 		order.setNewid(descom.getNewid());
@@ -110,17 +168,29 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		record.setNewid(descom.getNewid());
 		//Num:交易数量，当为买入时，num应该是负值，卖出时num为正值。
 		record.setNum(detail.getTrading_type()==Constant.TRADE_TYPE_BUY?changePosition.negate():changePosition);
+		record.setPrice(detail.getPrice());
 		service.insertRecord(record);
 		//买入持仓为正，卖出持仓为负
 		BigDecimal num = detail.getTrading_type()==Constant.TRADE_TYPE_BUY?changePosition:changePosition.negate();
+		
+		//生成交易指令文件
+		createOrder(detail,changePosition,getFileName(descom, data));
+		
+		//更新持仓信息
+		PositionRT position = new PositionRT();
+		position.setCode(detail.getCode());
+		position.setHoldprice(detail.getPrice());
+		position.setNewid(descom.getNewid());
+		position.setNum(num);
+		position.setUpdatetime(new Date());
+		position.setSource(Constant.POSITION_SOURCE_NEW);
+		updatePositionRT(descom, position);
+		
 		//更新资金信息
 		AssetRT asset = descom.getAsset();
 		//最新资金=最新资金-(交易价格*交易数量)
 		asset.setCash(asset.getCash().subtract(detail.getPrice().multiply(num)));
 		service.updateAssetRT(asset);
-		//生成交易指令文件
-		createOrder(detail,changePosition,getFileName(descom, data));
-		
 	}
 	
 	/**
@@ -149,11 +219,12 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	 * @param descom
 	 * @param detail
 	 * @param net 
+	 * @param isInitHolding 是否初始持仓
 	 */
-	private BigDecimal generatePosition(Descom descom, Detail detail, BigDecimal net) {
+	private BigDecimal generatePosition(Descom descom, Detail detail, BigDecimal net, boolean isInitHolding) {
 		BigDecimal changePosition = BigDecimal.ZERO;
 		//持仓数量
-		BigDecimal positionAccount = descom.getCodeAccount(detail.getCode());
+		BigDecimal positionAccount = descom.getHoldedCodeAccount(detail.getCode());
 		if(null==positionAccount){
 			positionAccount = BigDecimal.ZERO;
 		}
@@ -190,18 +261,23 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		
 		//卖出指令
 		if(detail.getTrading_type()==Constant.TRADE_TYPE_SELL){
-			//未持仓，不做交易
-			if(positionAccount.compareTo(BigDecimal.ZERO)!=1){
-				changePosition = BigDecimal.ZERO; 
+			//初始持仓，只计算数量
+			if(isInitHolding){
+				changePosition = changePosition.abs();
 			}else{
-				//调仓后权重==0,实际卖出数量=持仓数量
-				if(detail.getWeight2().compareTo(BigDecimal.ZERO)==0){
-					changePosition = positionAccount;
+				//未持仓，不做交易
+				if(positionAccount.compareTo(BigDecimal.ZERO)<=0){
+					changePosition = BigDecimal.ZERO; 
 				}else{
-					//卖出数量=(数量)A的绝对值
-					BigDecimal sellPosition = changePosition.abs();
-					//实际卖出数量=min(持仓数量，卖出数量);
-					changePosition = sellPosition.compareTo(positionAccount)==-1?sellPosition:positionAccount;
+					//调仓后权重==0,实际卖出数量=持仓数量
+					if(detail.getWeight2().compareTo(BigDecimal.ZERO)==0){
+						changePosition = positionAccount;
+					}else{
+						//卖出数量=(数量)A的绝对值
+						BigDecimal sellPosition = changePosition.abs();
+						//实际卖出数量=min(持仓数量，卖出数量);
+						changePosition = sellPosition.compareTo(positionAccount)==-1?sellPosition:positionAccount;
+					}
 				}
 			}
 		}

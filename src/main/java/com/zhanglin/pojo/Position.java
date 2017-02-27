@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Position extends PositionKey {
-    private BigDecimal holdprice;
-
     private BigDecimal num;
 
     private BigDecimal close;
@@ -21,14 +19,6 @@ public class Position extends PositionKey {
 	public void setWindCode(String windCode) {
 		this.windCode = windCode;
 	}
-
-	public BigDecimal getHoldprice() {
-        return holdprice;
-    }
-
-    public void setHoldprice(BigDecimal holdprice) {
-        this.holdprice = holdprice;
-    }
 
     public BigDecimal getNum() {
         return num;

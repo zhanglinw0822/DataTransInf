@@ -9,6 +9,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.zhanglin.pojo.Descom;
+import com.zhanglin.pojo.InitHolding;
 import com.zhanglin.service.IDescomService;
 import com.zhanglin.service.IMarketService;
 import com.zhanglin.tools.SpringContextUtil;
@@ -38,6 +39,16 @@ public class CacheManager {
 				@Override
 				public Map<String,String> load(String key) throws Exception {
 					return loadSTCodes();
+				}
+
+			});
+	
+	private LoadingCache<String, Map<String,InitHolding>> initHoldings = CacheBuilder.newBuilder()
+			.expireAfterWrite(1, TimeUnit.DAYS)
+			.build(new CacheLoader<String, Map<String,InitHolding>>(){
+				@Override
+				public Map<String,InitHolding> load(String key) throws Exception {
+					return loadInitHoldings();
 				}
 
 			});
@@ -77,6 +88,10 @@ public class CacheManager {
 		return marketService.getSTCodes();
 	}
 	
+	private Map<String,InitHolding> loadInitHoldings() throws Exception {
+		return marketService.getInitHoldings();
+	}
+	
 	public Descom getDescom(String id){
 		try {
 			Descom descom = descoms.get(id);
@@ -103,7 +118,15 @@ public class CacheManager {
 		try {
 			return STCodes.get("ST");
 		} catch (Exception e) {
-			logger.error("获取系统状态失败", e);
+			logger.error("获取ST失败", e);
+			return null;
+		}
+	}
+	public Map<String,InitHolding> getInitHolding(){
+		try {
+			return initHoldings.get("InitHolding");
+		} catch (Exception e) {
+			logger.error("获取initholding失败", e);
 			return null;
 		}
 	}

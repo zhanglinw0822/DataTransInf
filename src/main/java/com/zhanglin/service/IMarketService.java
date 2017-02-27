@@ -1,6 +1,9 @@
 package com.zhanglin.service;
 
+import java.util.List;
 import java.util.Map;
+
+import com.zhanglin.pojo.InitHolding;
 
 
 
@@ -23,4 +26,15 @@ public interface IMarketService {
 	 * @return 
 	 */
 	public Map<String, String> getSTCodes();
+	/**
+	 * 获取初始持仓
+	 * @return 
+	 */
+	public Map<String, InitHolding> getInitHoldings();
+	
+	/**
+	 * 获取初始持仓列表
+	 * @return 
+	 */
+	public List<InitHolding> getInitHoldingList();
 }

@@ -2,6 +2,7 @@ package com.zhanglin.service.impl;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,9 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zhanglin.Constant;
+import com.zhanglin.bean.Data;
+import com.zhanglin.bean.Detail;
 import com.zhanglin.cache.CacheManager;
 import com.zhanglin.dao.AssetMapper;
 import com.zhanglin.dao.AssetRTMapper;
+import com.zhanglin.dao.InitHoldingMapper;
 import com.zhanglin.dao.OrderMapper;
 import com.zhanglin.dao.PositionMapper;
 import com.zhanglin.dao.PositionRTMapper;
@@ -24,12 +28,14 @@ import com.zhanglin.dao.STMapper;
 import com.zhanglin.dao.SystemStatusMapper;
 import com.zhanglin.pojo.Asset;
 import com.zhanglin.pojo.AssetRT;
-import com.zhanglin.pojo.AssetRTExample;
+import com.zhanglin.pojo.InitHolding;
+import com.zhanglin.pojo.InitHoldingExample;
 import com.zhanglin.pojo.Position;
 import com.zhanglin.pojo.PositionRT;
 import com.zhanglin.pojo.ST;
 import com.zhanglin.pojo.STExample;
 import com.zhanglin.pojo.SystemStatus;
+import com.zhanglin.service.IDataTransInfService;
 import com.zhanglin.service.IMarketService;
 @Transactional
 @Service("marketService")
@@ -49,7 +55,9 @@ public class MarketServiceImpl implements IMarketService{
 	private SystemStatusMapper systemStatusDao;
 	@Resource
 	private STMapper STDao;
-
+	@Resource
+	private InitHoldingMapper initHoldingDao;
+	
 	public void openMarket() {
 		List<Asset> assets =assetDao.selectLastAsset();
 		assetRTDao.deleteAll();
@@ -66,6 +74,7 @@ public class MarketServiceImpl implements IMarketService{
 			for (Iterator<Position> iterator2 = positions.iterator(); iterator2.hasNext();) {
 				Position position_temp = iterator2.next();
 				PositionRT positionRT = new PositionRT(position_temp);
+				positionRT.setSource(Constant.POSITION_SOURCE_PREVIOUS);
 				positionRTDao.insert(positionRT);
 			}
 		}
@@ -80,11 +89,11 @@ public class MarketServiceImpl implements IMarketService{
 	}
 
 	public void closeMarket() {
-		List<AssetRT> assets = assetRTDao.selectByExample(new AssetRTExample());
-		for (Iterator<AssetRT> iterator = assets.iterator(); iterator.hasNext();) {
-			AssetRT assetRT = iterator.next();
-			assetDao.insert(new Asset(assetRT));
-		}
+//		List<AssetRT> assets = assetRTDao.selectByExample(new AssetRTExample());
+//		for (Iterator<AssetRT> iterator = assets.iterator(); iterator.hasNext();) {
+//			AssetRT assetRT = iterator.next();
+//			assetDao.insert(new Asset(assetRT));
+//		}
 		
 		SystemStatus status = new SystemStatus();
 		status.setId(BigDecimal.ONE);
@@ -92,7 +101,7 @@ public class MarketServiceImpl implements IMarketService{
 		systemStatusDao.updateByPrimaryKeySelective(status);
 		
 	}
-
+	
 	public String getSystemStaus() {
 		return systemStatusDao.selectByPrimaryKey(BigDecimal.ONE).getStatus();
 	}
@@ -105,6 +114,20 @@ public class MarketServiceImpl implements IMarketService{
 			map.put(st.getCode(), st.getName());
 		}
 		return map;
+	}
+
+	public Map<String, InitHolding> getInitHoldings() {
+		Map<String, InitHolding> map = new HashMap<String, InitHolding>();
+		List<InitHolding> initHoldings = getInitHoldingList();
+		for (Iterator<InitHolding> iterator = initHoldings.iterator(); iterator.hasNext();) {
+			InitHolding initHolding = iterator.next();
+			map.put(initHolding.getCode()+"_"+initHolding.getNewid().intValue(), initHolding);
+		}
+		return map;
+	}
+	
+	public List<InitHolding> getInitHoldingList() {
+		return initHoldingDao.selectByExample(new InitHoldingExample());
 	}
 
 }

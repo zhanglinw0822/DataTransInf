@@ -22,7 +22,17 @@ public class Record {
 
     private BigDecimal num;
     
-    public Record(Detail detail, Data data) {
+    private BigDecimal price;
+    
+    public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public Record(Detail detail, Data data) {
     	this.msguid = data.getMsguid();
     	this.id = data.getId();
     	this.ordertime = data.getOrdertime();

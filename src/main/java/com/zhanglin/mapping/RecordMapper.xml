@@ -10,6 +10,7 @@
     <result column="TRADETYPE" property="tradetype" jdbcType="DECIMAL" />
     <result column="REALTIME" property="realtime" jdbcType="VARCHAR" />
     <result column="NUM" property="num" jdbcType="DECIMAL" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -41,7 +42,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    MSGUID, ID, NEWID, ORDERTIME, CODE, TRADETYPE, REALTIME, NUM
+    MSGUID, ID, NEWID, ORDERTIME, CODE, TRADETYPE, REALTIME, NUM, PRICE
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.RecordExample" >
     select
@@ -71,10 +72,10 @@
   <insert id="insert" parameterType="com.zhanglin.pojo.Record" >
     insert into T_RECORD (MSGUID, ID, NEWID, 
       ORDERTIME, CODE, TRADETYPE, 
-      REALTIME, NUM)
+      REALTIME, NUM, PRICE)
     values (#{msguid,jdbcType=OTHER}, #{id,jdbcType=OTHER}, #{newid,jdbcType=DECIMAL}, 
       #{ordertime,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{tradetype,jdbcType=DECIMAL}, 
-      #{realtime,jdbcType=VARCHAR}, #{num,jdbcType=DECIMAL})
+      #{realtime,jdbcType=VARCHAR}, #{num,jdbcType=DECIMAL}, #{price,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.zhanglin.pojo.Record" >
     insert into T_RECORD
@@ -103,6 +104,9 @@
       <if test="num != null" >
         NUM,
       </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="msguid != null" >
@@ -128,6 +132,9 @@
       </if>
       <if test="num != null" >
         #{num,jdbcType=DECIMAL},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -155,6 +162,9 @@
       <if test="num != null" >
         NUM = #{num,jdbcType=DECIMAL},
       </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
     </set>
     where MSGUID = #{msguid,jdbcType=OTHER}
   </update>
@@ -166,7 +176,8 @@
       CODE = #{code,jdbcType=VARCHAR},
       TRADETYPE = #{tradetype,jdbcType=DECIMAL},
       REALTIME = #{realtime,jdbcType=VARCHAR},
-      NUM = #{num,jdbcType=DECIMAL}
+      NUM = #{num,jdbcType=DECIMAL},
+      NUM = #{price,jdbcType=DECIMAL}
     where MSGUID = #{msguid,jdbcType=OTHER}
   </update>
 </mapper>

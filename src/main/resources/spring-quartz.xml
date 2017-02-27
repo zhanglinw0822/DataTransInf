@@ -24,6 +24,16 @@
 	        </map>  
 	    </property> 
     </bean>  
+    
+    <bean name="handleInitHoldingJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.zhanglin.scheduler.jobs.HandleInitHoldingScheduledJob" />
+        <property name="jobDataMap">  
+	        <map>  
+	            <entry key="service" value-ref="marketService" />
+	            <entry key="transInfoService" value-ref="dataTransInfService" />
+	        </map>  
+	    </property> 
+    </bean>  
  
     <bean id="beginTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="beginJobDetail" />
@@ -35,12 +45,18 @@
         <property name="cronExpression" value="${endtime}" />
     </bean>
     
+    <bean id="handleInitHoldingTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="handleInitHoldingJobDetail" />
+        <property name="cronExpression" value="${handleinitholdingtime}" />
+    </bean>
+    
     <!-- Scheduler factory bean to glue together jobDetails and triggers to Configure Quartz Scheduler -->
     <bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="jobDetails">
             <list>
                 <ref bean="beginJobDetail" />
                 <ref bean="endJobDetail" />
+                <ref bean="handleInitHoldingJobDetail" />
             </list>
         </property>
  
@@ -48,11 +64,13 @@
             <list>
                 <ref bean="beginTrigger" />
                 <ref bean="endTrigger" />
+                <ref bean="handleInitHoldingTrigger" />
             </list>
         </property>
     </bean>
  	<bean class="com.zhanglin.scheduler.jobs.InitJob" init-method="init">
  		<property name="begintime" value="${begintime}"/>
  		<property name="endtime" value="${endtime}"/>
+ 		<property name="handleinitholdingtime" value="${handleinitholdingtime}"/>
  	</bean>
 </beans>

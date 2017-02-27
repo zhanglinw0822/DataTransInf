@@ -15,8 +15,18 @@ public class PositionRT {
     private Date updatetime;
     
     private String windCode;
+    
+    private int source;
 
-    public String getWindCode() {
+    public int getSource() {
+		return source;
+	}
+
+	public void setSource(int source) {
+		this.source = source;
+	}
+
+	public String getWindCode() {
 		return windCode;
 	}
 
@@ -26,7 +36,6 @@ public class PositionRT {
 
 	public PositionRT(Position position) {
     	this.code = position.getCode();
-    	this.holdprice = position.getHoldprice();
     	this.num = position.getNum();
     	this.newid = position.getNewid();
     	this.updatetime = position.getUpdatetime();

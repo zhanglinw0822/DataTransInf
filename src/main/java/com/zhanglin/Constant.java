@@ -65,4 +65,16 @@ public class Constant {
 	 * 市场状态-收盘
 	 */
 	public static final String SYSTEM_STATUS_CLOSE = "CLOSE";
+	/**
+	 * 运行时持仓类型-以往持仓
+	 */
+	public static final int POSITION_SOURCE_PREVIOUS = 0;
+	/**
+	 * 运行时持仓类型-当日新增
+	 */
+	public static final int POSITION_SOURCE_NEW = 1;
+	/**
+	 * 运行时持仓类型-初始化持仓变化数据
+	 */
+	public static final int POSITION_SOURCE_INITHOLDING = 2;
 }

@@ -21,7 +21,7 @@ public class EndScheduledJob extends QuartzJobBean {
 		try{
 			service.closeMarket();
 		}catch(Exception e){
-			logger.error("收盘失败");
+			logger.error("收盘失败",e);
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e1) {

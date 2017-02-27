@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.MoreObjects;
+import com.zhanglin.Constant;
 
 public class Descom {
     private BigDecimal newid;
@@ -51,7 +52,7 @@ public class Descom {
 		this.positionRT = positionRT;
 		for (Iterator<PositionRT> iterator = positionRT.iterator(); iterator.hasNext();) {
 			PositionRT temp = iterator.next();
-			putCodePosition(temp.getCode(), temp.getNum());
+			putCodePosition(temp.getCode()+"_"+temp.getSource(), temp.getNum());
 		}
 	}
 
@@ -73,8 +74,17 @@ public class Descom {
 		this.position = position;
 	}
 	
-	public BigDecimal getCodeAccount(String code){
-		return codePositions.get(code);
+	public BigDecimal getHoldedCodeAccount(String code){
+		return codePositions.get(code+"_"+Constant.POSITION_SOURCE_PREVIOUS);
+	}
+	
+	public BigDecimal getNewHoldCodeAccount(String code){
+		return codePositions.get(code+"_"+Constant.POSITION_SOURCE_NEW);
+	}
+	
+	public BigDecimal getInitHoldCodeAccount(String code){
+		String key = code+"_"+Constant.POSITION_SOURCE_INITHOLDING;
+		return codePositions.get(key)==null?BigDecimal.ZERO:codePositions.get(key);
 	}
 
 	public BigDecimal getNewid() {
@@ -119,7 +129,7 @@ public class Descom {
 
 	public void addPosition(PositionRT position) {
 		this.positionRT.add(position);
-		putCodePosition(position.getCode(),position.getNum());
+		putCodePosition(position.getCode()+"_"+position.getSource(),position.getNum());
 	}
 	
 	private void putCodePosition(String code,BigDecimal num){

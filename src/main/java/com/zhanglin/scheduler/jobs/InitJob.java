@@ -14,7 +14,14 @@ public class InitJob {
 	private static Logger logger = Logger.getLogger(InitJob.class); 
 	private String begintime;
 	private String endtime;
+	private String handleinitholdingtime;
 	
+	public String getHandleinitholdingtime() {
+		return handleinitholdingtime;
+	}
+	public void setHandleinitholdingtime(String handleinitholdingtime) {
+		this.handleinitholdingtime = handleinitholdingtime;
+	}
 	public String getBegintime() {
 		return begintime;
 	}
