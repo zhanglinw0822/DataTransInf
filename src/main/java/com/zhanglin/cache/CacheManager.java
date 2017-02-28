@@ -137,5 +137,8 @@ public class CacheManager {
 	
 	public void invalidateAll(){
 		descoms.invalidateAll();
+		initHoldings.invalidateAll();
+		status.invalidateAll();
+		STCodes.invalidateAll();
 	}
 }

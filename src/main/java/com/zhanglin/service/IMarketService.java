@@ -37,4 +37,9 @@ public interface IMarketService {
 	 * @return 
 	 */
 	public List<InitHolding> getInitHoldingList();
+	/**
+	 * 加载缓存
+	 * @return 
+	 */
+	public void loadCache();
 }

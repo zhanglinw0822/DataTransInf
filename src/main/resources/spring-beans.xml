@@ -8,6 +8,7 @@
 		<property name="maxWeight" value="${maxWeight}"/>
 		<property name="tempPath" value="${tempPath}"/>
 		<property name="orderFilePath" value="${orderFilePath}"/>
+		<property name="initHoldingFlag" value="${initholdingflag}"/>
 	</bean>
 	<bean id="springContextUtil" class="com.zhanglin.tools.SpringContextUtil"/>
 </beans>

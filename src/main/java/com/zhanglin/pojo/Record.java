@@ -1,7 +1,10 @@
 package com.zhanglin.pojo;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import com.zhanglin.Constant;
 import com.zhanglin.bean.Data;
 import com.zhanglin.bean.Detail;
 
@@ -38,7 +41,7 @@ public class Record {
     	this.ordertime = data.getOrdertime();
     	this.code = detail.getCode();
     	this.tradetype = detail.getTrading_type();
-    	this.realtime = data.getRealtime();
+    	this.realtime = new SimpleDateFormat("HHmmss").format(new Date());
 	}
     
     public Object getMsguid() {

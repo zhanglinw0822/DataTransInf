@@ -24,6 +24,19 @@ public class Config {
 	 * 交易指令文件目录
 	 */
 	private String orderFilePath;
+	
+	/**
+	 * 是否初始化持仓标识
+	 */
+	private boolean initHoldingFlag;
+
+	public boolean isInitHoldingFlag() {
+		return initHoldingFlag;
+	}
+
+	public void setInitHoldingFlag(boolean initHoldingFlag) {
+		this.initHoldingFlag = initHoldingFlag;
+	}
 
 	public String getTempPath() {
 		return tempPath;

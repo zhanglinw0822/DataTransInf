@@ -15,11 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zhanglin.Constant;
+import com.zhanglin.bean.Config;
 import com.zhanglin.bean.Data;
 import com.zhanglin.bean.Detail;
 import com.zhanglin.cache.CacheManager;
 import com.zhanglin.dao.AssetMapper;
 import com.zhanglin.dao.AssetRTMapper;
+import com.zhanglin.dao.DescomMapper;
 import com.zhanglin.dao.InitHoldingMapper;
 import com.zhanglin.dao.OrderMapper;
 import com.zhanglin.dao.PositionMapper;
@@ -28,6 +30,8 @@ import com.zhanglin.dao.STMapper;
 import com.zhanglin.dao.SystemStatusMapper;
 import com.zhanglin.pojo.Asset;
 import com.zhanglin.pojo.AssetRT;
+import com.zhanglin.pojo.Descom;
+import com.zhanglin.pojo.DescomExample;
 import com.zhanglin.pojo.InitHolding;
 import com.zhanglin.pojo.InitHoldingExample;
 import com.zhanglin.pojo.Position;
@@ -57,6 +61,10 @@ public class MarketServiceImpl implements IMarketService{
 	private STMapper STDao;
 	@Resource
 	private InitHoldingMapper initHoldingDao;
+	@Resource
+	private DescomMapper descomDao;
+	@Resource
+	private Config config;
 	
 	public void openMarket() {
 		List<Asset> assets =assetDao.selectLastAsset();
@@ -84,8 +92,27 @@ public class MarketServiceImpl implements IMarketService{
 		status.setStatus(Constant.SYSTEM_STATUS_OPEN);
 		status.setTradedate(new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT).format(new Date()));
 		systemStatusDao.updateByPrimaryKey(status);
+		
+		loadCache();
+	}
+
+	public void loadCache() {
 		//清除缓存
 		CacheManager.getInstance().invalidateAll();
+		
+		//初始化缓存数据
+		DescomExample example = new DescomExample();
+		example.createCriteria().andIstrueEqualTo(BigDecimal.ONE);
+		List<Descom> descoms = descomDao.selectByExample(example);
+		for (Iterator<Descom> iterator = descoms.iterator(); iterator.hasNext();) {
+			Descom descom = iterator.next();
+			CacheManager.getInstance().getDescom(descom.getId());
+		}
+		if(config.isInitHoldingFlag()){
+			CacheManager.getInstance().getInitHolding();
+		}
+		CacheManager.getInstance().getSTCode();
+		CacheManager.getInstance().getSystemStatus();
 	}
 
 	public void closeMarket() {
@@ -99,7 +126,8 @@ public class MarketServiceImpl implements IMarketService{
 		status.setId(BigDecimal.ONE);
 		status.setStatus(Constant.SYSTEM_STATUS_CLOSE);
 		systemStatusDao.updateByPrimaryKeySelective(status);
-		
+		//清除缓存
+		CacheManager.getInstance().invalidateAll();
 	}
 	
 	public String getSystemStaus() {

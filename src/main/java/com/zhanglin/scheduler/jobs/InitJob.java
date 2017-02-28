@@ -6,6 +6,7 @@ import java.util.Calendar;
 import org.apache.log4j.Logger;
 import org.quartz.CronExpression;
 
+import com.mysql.fabric.Server;
 import com.zhanglin.Constant;
 import com.zhanglin.service.IMarketService;
 import com.zhanglin.tools.SpringContextUtil;
@@ -61,6 +62,7 @@ public class InitJob {
 					service.openMarket();
 					logger.info("system opend.");
 				}else{
+					service.loadCache();
 					logger.info("status is ok,do nothing.");
 				}
 			}else if (nextCloseTime.get(Calendar.DAY_OF_MONTH) != ca

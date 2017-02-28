@@ -123,14 +123,14 @@ public class DataTransInfController {
 			}
 		}
 		// ordertime等于当前日期
-		String str_now = new SimpleDateFormat("yyyyMMdd")
+		String str_now = new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT)
 				.format(new Date());
 		if (!str_now.equals(data.getOrdertime())) {
 			logger.info("请求格式验证未通过,ordertime不等于当前日期"+str_now+",data="+data);
 			return false;
 		}
 		// realtime小于15点。 real-time<1500
-		if (data.getRealtime().compareTo("2200") >= 0) {
+		if (data.getRealtime().compareTo("1500") >= 0) {
 			logger.info("请求格式验证未通过,realtime大于等于15点,data="+data);
 			return false;
 		}
