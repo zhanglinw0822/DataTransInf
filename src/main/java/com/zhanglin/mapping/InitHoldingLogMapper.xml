@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zhanglin.dao.InitHoldingMapper" >
-  <resultMap id="BaseResultMap" type="com.zhanglin.pojo.InitHolding" >
+<mapper namespace="com.zhanglin.dao.InitHoldingLogMapper" >
+  <resultMap id="BaseResultMap" type="com.zhanglin.pojo.InitHoldingLog" >
     <result column="ID" property="id" jdbcType="VARCHAR" />
     <result column="CURDATE" property="curdate" jdbcType="VARCHAR" />
     <result column="CODE" property="code" jdbcType="VARCHAR" />
@@ -10,6 +10,7 @@
     <result column="NEWID" property="newid" jdbcType="DECIMAL" />
     <result column="VOLUME" property="volume" jdbcType="DECIMAL" />
     <result column="CLOSEPRICE" property="closeprice" jdbcType="DECIMAL" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -41,16 +42,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    ID, CURDATE, CODE, WEIGHT, NET, NEWID, VOLUME, CLOSEPRICE
+    ID, CURDATE, CODE, WEIGHT, NET, NEWID, VOLUME, CLOSEPRICE, UPDATETIME
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.InitHoldingExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.InitHoldingLogExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     'false' as QUERYID,
     <include refid="Base_Column_List" />
-    from INIT_HOLDING
+    from INIT_HOLDING_LOG
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -58,16 +59,18 @@
       order by ${orderByClause}
     </if>
   </select>
-  <insert id="insert" parameterType="com.zhanglin.pojo.InitHolding" >
-    insert into INIT_HOLDING (ID, CURDATE, CODE, 
+  <insert id="insert" parameterType="com.zhanglin.pojo.InitHoldingLog" >
+    insert into INIT_HOLDING_LOG (ID, CURDATE, CODE, 
       WEIGHT, NET, NEWID, 
-      VOLUME, CLOSEPRICE)
+      VOLUME, CLOSEPRICE, UPDATETIME
+      )
     values (#{id,jdbcType=VARCHAR}, #{curdate,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
       #{weight,jdbcType=DECIMAL}, #{net,jdbcType=DECIMAL}, #{newid,jdbcType=DECIMAL}, 
-      #{volume,jdbcType=DECIMAL}, #{closeprice,jdbcType=DECIMAL})
+      #{volume,jdbcType=DECIMAL}, #{closeprice,jdbcType=DECIMAL}, sysdate
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.zhanglin.pojo.InitHolding" >
-    insert into INIT_HOLDING
+  <insert id="insertSelective" parameterType="com.zhanglin.pojo.InitHoldingLog" >
+    insert into INIT_HOLDING_LOG
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         ID,
@@ -92,6 +95,9 @@
       </if>
       <if test="closeprice != null" >
         CLOSEPRICE,
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -119,10 +125,9 @@
       <if test="closeprice != null" >
         #{closeprice,jdbcType=DECIMAL},
       </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
-  <select id="selectNotHandled" resultMap="BaseResultMap" >
-    select t.* from INIT_HOLDING t left join INIT_HOLDING_LOG l on t.id = l.id and t.code=l.code and t.newid = l.newid
-    where l.updatetime is null
-  </select>
 </mapper>

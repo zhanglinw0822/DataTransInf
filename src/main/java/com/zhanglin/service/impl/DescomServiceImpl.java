@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.zhanglin.dao.AssetMapper;
 import com.zhanglin.dao.AssetRTMapper;
 import com.zhanglin.dao.DescomMapper;
+import com.zhanglin.dao.InitHoldingLogMapper;
 import com.zhanglin.dao.OrderMapper;
 import com.zhanglin.dao.PositionMapper;
 import com.zhanglin.dao.PositionRTMapper;
@@ -16,6 +17,7 @@ import com.zhanglin.dao.RecordMapper;
 import com.zhanglin.pojo.AssetRT;
 import com.zhanglin.pojo.Descom;
 import com.zhanglin.pojo.DescomExample;
+import com.zhanglin.pojo.InitHoldingLog;
 import com.zhanglin.pojo.Order;
 import com.zhanglin.pojo.PositionExample;
 import com.zhanglin.pojo.PositionRT;
@@ -39,6 +41,8 @@ public class DescomServiceImpl implements IDescomService{
 	private AssetRTMapper assetRTDao;
 	@Resource
 	private RecordMapper recordDao;
+	@Resource
+	private InitHoldingLogMapper initHoldingLogDao;
 	
 	public Descom getDescom(String id) {
 		DescomExample example = new DescomExample();
@@ -76,6 +80,10 @@ public class DescomServiceImpl implements IDescomService{
 
 	public void insertRecord(Record record) {
 		recordDao.insert(record);
+	}
+
+	public void insertInitHoldingLog(InitHoldingLog holding) {
+		initHoldingLogDao.insert(holding);
 	}
 
 }

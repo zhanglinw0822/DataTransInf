@@ -1,21 +1,20 @@
 package com.zhanglin.service.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zhanglin.Constant;
-import com.zhanglin.bean.Config;
 import com.zhanglin.bean.Data;
 import com.zhanglin.bean.Detail;
 import com.zhanglin.bean.FileName;
@@ -24,12 +23,16 @@ import com.zhanglin.cache.CacheManager;
 import com.zhanglin.cache.DataManager;
 import com.zhanglin.pojo.AssetRT;
 import com.zhanglin.pojo.Descom;
+import com.zhanglin.pojo.InitHolding;
+import com.zhanglin.pojo.InitHoldingLog;
 import com.zhanglin.pojo.Order;
 import com.zhanglin.pojo.PositionRT;
 import com.zhanglin.pojo.Record;
 import com.zhanglin.service.IDataTransInfService;
 import com.zhanglin.service.IDescomService;
+import com.zhanglin.service.IMarketService;
 import com.zhanglin.service.IRequestService;
+import com.zhanglin.tools.CustomizedPropertyConfigurer;
 import com.zhanglin.tools.FileTools;
 
 @Transactional
@@ -37,11 +40,14 @@ import com.zhanglin.tools.FileTools;
 public class DataTransInfServiceImpl implements IDataTransInfService {
 	private static Logger logger = Logger.getLogger(DataTransInfServiceImpl.class); 
 	@Resource
-	private Config config;
-	@Resource
 	IDescomService service;
 	@Resource
 	IRequestService reqService;
+	@Resource
+	IMarketService marketService;
+    private String tempPath = CustomizedPropertyConfigurer.getStringContextProperty("tempPath");
+    private String orderFilePath = CustomizedPropertyConfigurer.getStringContextProperty("orderFilePath");
+    private boolean initholdingflag = CustomizedPropertyConfigurer.getBooleanContextProperty("initholdingflag");
 	
 	public void reciveData(Data data) throws Exception{
 		reqService.insertRequest(data,Constant.REQUEST_STATUS_PENDING);
@@ -70,21 +76,21 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			if(descom!=null&&descom.getIstrue().compareTo(BigDecimal.ONE)==0){
 				//清除指令文件，避免脏数据
 				String filename = getFileName(descom, data);
-				FileTools.delete(filename, config.getTempPath());
+				FileTools.delete(filename, tempPath);
 				for (Iterator<Detail> iterator = data.getDetails().iterator(); iterator.hasNext();) {
 					Detail detail = iterator.next();
 					if(checkRisk(detail)){
 						//该股票是否为初始化持仓中的股票
 						boolean isInitHolding = false;
 						//接口数据并且需要处理初始化持仓，判断股票是否在初始化持仓中
-						if(isFromInterface&&config.isInitHoldingFlag()){
+						if(isFromInterface&&initholdingflag){
 							isInitHolding = isInitHolding(detail,descom.getNewid());
 						}
 						logger.info("isInitHolding="+isInitHolding);
 						BigDecimal changePosition = generatePosition(descom,detail,data.getNetvalue(),isInitHolding);
 						if(changePosition.compareTo(BigDecimal.ZERO)==1){
 							//数据来自接口或者系统不需要处理初始化持仓数据
-							if(isFromInterface||!config.isInitHoldingFlag()){
+							if(isFromInterface||!initholdingflag){
 								generateRecord(descom,detail,changePosition,data,isInitHolding);
 							}else{
 								//如果是处理初始化持仓中，需要减去本日卖出的数量，卖出持仓本身就为负数
@@ -101,7 +107,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 					order.setNewid(descom.getNewid());
 					service.insertOrder(order);
 				}
-				FileTools.copy(filename, config.getTempPath(), config.getOrderFilePath());
+				FileTools.copy(filename, tempPath , orderFilePath);
 			}else{
 				logger.info("未找到对应组合，不做处理,id:"+data.getId());
 			}
@@ -206,7 +212,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		trade.setTradetype(String.valueOf(detail.getTrading_type()));
 		trade.setNum(changePosition.toString());
 		
-		FileTools.write(filename, config.getTempPath(), trade.getTradeOrder().getBytes());
+		FileTools.write(filename, tempPath, trade.getTradeOrder().getBytes());
 	}
 
 	private void cacheRollBack(Descom descom) {
@@ -304,5 +310,41 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	private String generateWindCode(String code) {
 		return code.substring(2)+"."+code.substring(0, 2);
 	}
-
+	@Transactional(rollbackFor=Exception.class)
+	public void handleInitHolding(){
+		logger.info("准备处理初始化持仓数据");
+		try{
+			List<InitHolding> initHoldings = marketService.getInitHoldingList();
+			for (Iterator<InitHolding> iterator = initHoldings.iterator(); iterator.hasNext();) {
+				InitHolding initHolding = iterator.next();
+				Data data  = new Data();
+				
+				Detail detail = new Detail();
+				detail.setCode(initHolding.getCode());
+				detail.setPrice(initHolding.getCloseprice());
+				detail.setTrading_type(Constant.TRADE_TYPE_BUY);
+				detail.setWeight1(BigDecimal.ZERO);
+				detail.setWeight2(initHolding.getWeight());
+				
+				List<Detail> details = new ArrayList<Detail>();
+				details.add(detail);
+				data.setDetails(details);
+				data.setDelay(0);
+				data.setMsguid("initholding_"+initHolding.getNewid());
+				data.setOrigJson("{}");
+				data.setRequestId(BigDecimal.ZERO);
+				data.setId(initHolding.getId());
+				data.setNetvalue(initHolding.getNet());
+				data.setOrdertime(new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT).format(new Date()));
+				data.setRealtime(new SimpleDateFormat("HHmm").format(new Date()));
+				logger.info("开始处理初始化持仓数据："+data);
+				handleData(data, false);
+				InitHoldingLog holding  = new InitHoldingLog(initHolding);
+				service.insertInitHoldingLog(holding);
+			}
+		}catch(Exception e){
+			logger.error("处理初始化持仓数据异常",e);
+		}
+		logger.info("处理初始化持仓数据成功");
+	}
 }

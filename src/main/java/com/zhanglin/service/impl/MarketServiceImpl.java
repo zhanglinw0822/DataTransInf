@@ -2,7 +2,6 @@ package com.zhanglin.service.impl;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,9 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zhanglin.Constant;
-import com.zhanglin.bean.Config;
-import com.zhanglin.bean.Data;
-import com.zhanglin.bean.Detail;
 import com.zhanglin.cache.CacheManager;
 import com.zhanglin.dao.AssetMapper;
 import com.zhanglin.dao.AssetRTMapper;
@@ -39,8 +35,8 @@ import com.zhanglin.pojo.PositionRT;
 import com.zhanglin.pojo.ST;
 import com.zhanglin.pojo.STExample;
 import com.zhanglin.pojo.SystemStatus;
-import com.zhanglin.service.IDataTransInfService;
 import com.zhanglin.service.IMarketService;
+import com.zhanglin.tools.CustomizedPropertyConfigurer;
 @Transactional
 @Service("marketService")
 public class MarketServiceImpl implements IMarketService{
@@ -63,8 +59,7 @@ public class MarketServiceImpl implements IMarketService{
 	private InitHoldingMapper initHoldingDao;
 	@Resource
 	private DescomMapper descomDao;
-	@Resource
-	private Config config;
+    private boolean initholdingflag = CustomizedPropertyConfigurer.getBooleanContextProperty("initholdingflag");;
 	
 	public void openMarket() {
 		List<Asset> assets =assetDao.selectLastAsset();
@@ -108,7 +103,7 @@ public class MarketServiceImpl implements IMarketService{
 			Descom descom = iterator.next();
 			CacheManager.getInstance().getDescom(descom.getId());
 		}
-		if(config.isInitHoldingFlag()){
+		if(initholdingflag){
 			CacheManager.getInstance().getInitHolding();
 		}
 		CacheManager.getInstance().getSTCode();
@@ -155,7 +150,7 @@ public class MarketServiceImpl implements IMarketService{
 	}
 	
 	public List<InitHolding> getInitHoldingList() {
-		return initHoldingDao.selectByExample(new InitHoldingExample());
+		return initHoldingDao.selectNotHandled();
 	}
 
 }

@@ -4,11 +4,10 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
  
-    <bean id="config" class="com.zhanglin.bean.Config">
-		<property name="maxWeight" value="${maxWeight}"/>
-		<property name="tempPath" value="${tempPath}"/>
-		<property name="orderFilePath" value="${orderFilePath}"/>
-		<property name="initHoldingFlag" value="${initholdingflag}"/>
-	</bean>
+ 	<!-- use customized properties configurer to expose properties to program -->  
+	<bean id="configBean"   
+	    class="com.zhanglin.tools.CustomizedPropertyConfigurer">  
+	    <property name="locations" value="classpath:*.properties" />
+	</bean>  
 	<bean id="springContextUtil" class="com.zhanglin.tools.SpringContextUtil"/>
 </beans>
