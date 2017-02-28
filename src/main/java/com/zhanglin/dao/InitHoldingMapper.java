@@ -10,4 +10,6 @@ public interface InitHoldingMapper {
     int insertSelective(InitHolding record);
 
     List<InitHolding> selectByExample(InitHoldingExample example);
+    
+    List<InitHolding> selectNotHandled();
 }

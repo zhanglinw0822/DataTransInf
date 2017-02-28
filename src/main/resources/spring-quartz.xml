@@ -69,8 +69,5 @@
         </property>
     </bean>
  	<bean class="com.zhanglin.scheduler.jobs.InitJob" init-method="init">
- 		<property name="begintime" value="${begintime}"/>
- 		<property name="endtime" value="${endtime}"/>
- 		<property name="handleinitholdingtime" value="${handleinitholdingtime}"/>
  	</bean>
 </beans>
