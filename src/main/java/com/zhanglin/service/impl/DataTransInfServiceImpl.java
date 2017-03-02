@@ -91,11 +91,11 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 						if(changePosition.compareTo(BigDecimal.ZERO)==1){
 							//数据来自接口或者系统不需要处理初始化持仓数据
 							if(isFromInterface||!initholdingflag){
-								generateRecord(descom,detail,changePosition,data,isInitHolding);
+								generateRecord(descom,detail,changePosition,data,isInitHolding,filename);
 							}else{
 								//如果是处理初始化持仓中，需要减去本日卖出的数量，卖出持仓本身就为负数
 								logger.info(detail.getCode()+"本日卖出数量为："+descom.getInitHoldCodeAccount(detail.getCode()));
-								generateRecord(descom,detail,changePosition.add(descom.getInitHoldCodeAccount(detail.getCode())),data,isInitHolding);
+								generateRecord(descom,detail,changePosition.add(descom.getInitHoldCodeAccount(detail.getCode())),data,isInitHolding,filename);
 							}
 						}else{
 							logger.info("需交易数量为0，不做处理,detail:"+detail);
@@ -141,11 +141,11 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	 * @param num
 	 * @throws Exception 
 	 */
-	private void generateRecord(Descom descom, Detail detail, BigDecimal changePosition,Data data, boolean isInitHolding) throws Exception {
+	private void generateRecord(Descom descom, Detail detail, BigDecimal changePosition,Data data, boolean isInitHolding, String filename) throws Exception {
 		if(isInitHolding&&detail.getTrading_type()==Constant.TRADE_TYPE_SELL){
 			generateInitRecord(descom, detail, changePosition, data);
 		}else{
-			generateCommonRecord(descom, detail, changePosition, data);
+			generateCommonRecord(descom, detail, changePosition, data, filename);
 		}
 	}
 	private void generateInitRecord(Descom descom, Detail detail,
@@ -168,7 +168,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		descom.addPosition(position);
 	}
 	private void generateCommonRecord(Descom descom, Detail detail,
-			BigDecimal changePosition, Data data) throws Exception {
+			BigDecimal changePosition, Data data, String filename) throws Exception {
 		//插入record数据
 		Record record = new Record(detail,data);
 		record.setNewid(descom.getNewid());
@@ -180,7 +180,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		BigDecimal num = detail.getTrading_type()==Constant.TRADE_TYPE_BUY?changePosition:changePosition.negate();
 		
 		//生成交易指令文件
-		createOrder(detail,changePosition,getFileName(descom, data));
+		createOrder(detail,changePosition,filename);
 		
 		//更新持仓信息
 		PositionRT position = new PositionRT();
@@ -243,10 +243,10 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			asset.setAsset(BigDecimal.ZERO);
 		}
 		BigDecimal price = detail.getPrice();
-		//分子=(调仓前权重/100 - 调仓后权重/100)*总资产的平方
-		BigDecimal numerator = detail.getWeight1().divide(Constant.WEIGHT_MULTIPLE).subtract(detail.getWeight2().divide(Constant.WEIGHT_MULTIPLE)).multiply(asset.getAsset().pow(2));
-		//分母=期初总资产*调仓瞬时净值*委托价格
-		BigDecimal denominator = descom.getFirstAsset().getAsset().multiply(net).multiply(price);
+		//分子=(调仓前权重/100 - 调仓后权重/100)*总资产
+		BigDecimal numerator = detail.getWeight1().divide(Constant.WEIGHT_MULTIPLE).subtract(detail.getWeight2().divide(Constant.WEIGHT_MULTIPLE)).multiply(asset.getAsset());
+		//分母=委托价格
+		BigDecimal denominator = price;
 		//数量=分子/分母;(100的整数倍，向下取整, 不足100为0)
 		changePosition = numerator.divide(denominator.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_DOWN).multiply(Constant.POSITION_MULTIPLE);
 		
