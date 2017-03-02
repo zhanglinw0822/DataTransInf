@@ -243,10 +243,10 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			asset.setAsset(BigDecimal.ZERO);
 		}
 		BigDecimal price = detail.getPrice();
-		//分子=(调仓前权重/100 - 调仓后权重/100)*总资产的平方
-		BigDecimal numerator = detail.getWeight1().divide(Constant.WEIGHT_MULTIPLE).subtract(detail.getWeight2().divide(Constant.WEIGHT_MULTIPLE)).multiply(asset.getAsset().pow(2));
-		//分母=期初总资产*调仓瞬时净值*委托价格
-		BigDecimal denominator = descom.getFirstAsset().getAsset().multiply(net).multiply(price);
+		//分子=(调仓前权重/100 - 调仓后权重/100)*总资产
+		BigDecimal numerator = detail.getWeight1().divide(Constant.WEIGHT_MULTIPLE).subtract(detail.getWeight2().divide(Constant.WEIGHT_MULTIPLE)).multiply(asset.getAsset());
+		//分母=委托价格
+		BigDecimal denominator = price;
 		//数量=分子/分母;(100的整数倍，向下取整, 不足100为0)
 		changePosition = numerator.divide(denominator.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_DOWN).multiply(Constant.POSITION_MULTIPLE);
 		
