@@ -43,7 +43,7 @@ public class Order {
 		this.tradetype = new BigDecimal(detail.getTrading_type());
 		this.orderTime = data.getRealtime();
 		this.delay = new BigDecimal(data.getDelay());
-		this.recvtime = new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT).format(new Date());
+		this.recvtime = data.getOrdertime();
 		this.updatetime = new Date();
 		this.net = data.getNetvalue();
 		this.w1 = detail.getWeight1();

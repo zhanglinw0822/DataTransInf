@@ -127,7 +127,7 @@ public class DataTransInfController {
 				.format(new Date());
 		if (!str_now.equals(data.getOrdertime())) {
 			logger.info("请求格式验证未通过,ordertime不等于当前日期"+str_now+",data="+data);
-//			return false;
+			return false;
 		}
 		// realtime小于15点。 real-time<1500
 		if (data.getRealtime().compareTo("1500") >= 0) {
