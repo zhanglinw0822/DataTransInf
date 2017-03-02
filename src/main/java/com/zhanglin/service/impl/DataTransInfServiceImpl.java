@@ -95,7 +95,12 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 							}else{
 								//如果是处理初始化持仓中，需要减去本日卖出的数量，卖出持仓本身就为负数
 								logger.info(detail.getCode()+"本日卖出数量为："+descom.getInitHoldCodeAccount(detail.getCode()));
-								generateRecord(descom,detail,changePosition.add(descom.getInitHoldCodeAccount(detail.getCode())),data,isInitHolding,filename);
+								BigDecimal realPosition =  changePosition.add(descom.getInitHoldCodeAccount(detail.getCode()));
+								if(realPosition.compareTo(BigDecimal.ZERO)>0){
+									generateRecord(descom,detail,realPosition,data,isInitHolding,filename);
+								}else{
+									logger.info("实际需交易数量为0，不做处理,detail:"+detail);
+								}
 							}
 						}else{
 							logger.info("需交易数量为0，不做处理,detail:"+detail);
@@ -129,7 +134,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		filename.setNewid(descom.getNewid().toString());
 		filename.setOrdertime(data.getOrdertime());
 		filename.setRealtime(data.getRealtime());
-		
+		logger.info(filename.toString());
 		return filename.toString();
 	}
 
