@@ -7,6 +7,7 @@
     <result column="TIME" property="time" jdbcType="VARCHAR" />
     <result column="ISTRUE" property="istrue" jdbcType="DECIMAL" />
     <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="TSTATUS" property="tstatus" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -38,7 +39,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    NEWID, ID, TIME, ISTRUE, UPDATETIME
+    NEWID, ID, TIME, ISTRUE, UPDATETIME, TSTATUS
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.DescomExample" >
     select

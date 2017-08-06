@@ -47,7 +47,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	IMarketService marketService;
     private String tempPath = CustomizedPropertyConfigurer.getStringContextProperty("tempPath");
     private String orderFilePath = CustomizedPropertyConfigurer.getStringContextProperty("orderFilePath");
-    private boolean initholdingflag = CustomizedPropertyConfigurer.getBooleanContextProperty("initholdingflag");
+//    private boolean initholdingflag = CustomizedPropertyConfigurer.getBooleanContextProperty("initholdingflag");
 	
 	public void reciveData(Data data) throws Exception{
 		reqService.insertRequest(data,Constant.REQUEST_STATUS_PENDING);
@@ -71,56 +71,61 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	 */
 	@Transactional(rollbackFor=Exception.class)
 	public void handleData(Data data,boolean isFromInterface) throws Exception {
-		Descom descom = CacheManager.getInstance().getDescom(data.getId());
+		List<Descom> descoms = CacheManager.getInstance().getDescom(data.getId());
 		try{
-			if(descom!=null&&descom.getIstrue().compareTo(BigDecimal.ONE)==0){
-				//清除指令文件，避免脏数据
-				String filename = getFileName(descom, data);
-				FileTools.delete(filename, tempPath);
-				for (Iterator<Detail> iterator = data.getDetails().iterator(); iterator.hasNext();) {
-					Detail detail = iterator.next();
-					if(checkRisk(detail)){
-						//该股票是否为初始化持仓中的股票
-						boolean isInitHolding = false;
-						//接口数据并且需要处理初始化持仓，判断股票是否在初始化持仓中
-						if(isFromInterface&&initholdingflag){
-							isInitHolding = isInitHolding(detail,descom.getNewid());
-						}
-						logger.info("isInitHolding="+isInitHolding);
-						BigDecimal changePosition = generatePosition(descom,detail,data.getNetvalue(),isInitHolding);
-						if(changePosition.compareTo(BigDecimal.ZERO)==1){
-							//数据来自接口或者系统不需要处理初始化持仓数据
-							if(isFromInterface||!initholdingflag){
-								generateRecord(descom,detail,changePosition,data,isInitHolding,filename);
-							}else{
-								//如果是处理初始化持仓中，需要减去本日卖出的数量，卖出持仓本身就为负数
-								logger.info(detail.getCode()+"本日卖出数量为："+descom.getInitHoldCodeAccount(detail.getCode()));
-								BigDecimal realPosition =  changePosition.add(descom.getInitHoldCodeAccount(detail.getCode()));
-								if(realPosition.compareTo(BigDecimal.ZERO)>0){
-									generateRecord(descom,detail,realPosition,data,isInitHolding,filename);
-								}else{
-									logger.info("实际需交易数量为0，不做处理,detail:"+detail);
-								}
+			for (int i = 0; i < descoms.size(); i++) {
+				Descom descom =  descoms.get(i);
+				if(descom!=null&&descom.getIstrue().compareTo(BigDecimal.ONE)==0){
+					boolean initholdingflag = (descom.getTstatus().intValue()==1);
+					//清除指令文件，避免脏数据
+					String filename = getFileName(descom, data);
+					FileTools.delete(filename, tempPath);
+					for (Iterator<Detail> iterator = data.getDetails().iterator(); iterator.hasNext();) {
+						Detail detail = iterator.next();
+						if(checkRisk(detail)){
+							//该股票是否为初始化持仓中的股票
+							boolean isInitHolding = false;
+							//接口数据并且需要处理初始化持仓，判断股票是否在初始化持仓中
+							if(isFromInterface&&initholdingflag){
+								isInitHolding = isInitHolding(detail,descom.getNewid());
 							}
-						}else{
-							logger.info("需交易数量为0，不做处理,detail:"+detail);
+							logger.info("isInitHolding="+isInitHolding);
+							BigDecimal changePosition = generatePosition(descom,detail,data.getNetvalue(),isInitHolding);
+							if(changePosition.compareTo(BigDecimal.ZERO)==1){
+								//数据来自接口或者系统不需要处理初始化持仓数据
+								if(isFromInterface||!initholdingflag){
+									generateRecord(descom,detail,changePosition,data,isInitHolding,filename);
+								}else{
+									//如果是处理初始化持仓中，需要减去本日卖出的数量，卖出持仓本身就为负数
+									logger.info(detail.getCode()+"本日卖出数量为："+descom.getInitHoldCodeAccount(detail.getCode()));
+									BigDecimal realPosition =  changePosition.add(descom.getInitHoldCodeAccount(detail.getCode()));
+									if(realPosition.compareTo(BigDecimal.ZERO)>0){
+										generateRecord(descom,detail,realPosition,data,isInitHolding,filename);
+									}else{
+										logger.info("实际需交易数量为0，不做处理,detail:"+detail);
+									}
+								}
+							}else{
+								logger.info("需交易数量为0，不做处理,detail:"+detail);
+							}
 						}
+
+						//插入order信息
+						Order order =new Order(detail,data);
+						order.setNewid(descom.getNewid());
+						service.insertOrder(order);
 					}
-					
-					//插入order信息
-					Order order =new Order(detail,data);
-					order.setNewid(descom.getNewid());
-					service.insertOrder(order);
+					FileTools.copy(filename, tempPath , orderFilePath);
 				}
-				FileTools.copy(filename, tempPath , orderFilePath);
-			}else{
+			}
+			if(null == descoms || descoms.size()==0){
 				logger.info("未找到对应组合，不做处理,id:"+data.getId());
 			}
 			if(isFromInterface)
 				reqService.updateRequest(data,Constant.REQUEST_STATUS_SUCESS);
 		}catch(Exception e){
 			logger.error("生成交易指令异常，事务回滚。");
-			cacheRollBack(descom);
+			cacheRollBack(descoms);
 			throw e;
 		}
 	}
@@ -140,11 +145,9 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 
 	/**
 	 * 生成交易指令
-	 * @param newId 
 	 * @param detail
 	 * @param isInitHolding 
-	 * @param num
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void generateRecord(Descom descom, Detail detail, BigDecimal changePosition,Data data, boolean isInitHolding, String filename) throws Exception {
 		if(isInitHolding&&detail.getTrading_type()==Constant.TRADE_TYPE_SELL){
@@ -220,9 +223,11 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		FileTools.write(filename, tempPath, trade.getTradeOrder().getBytes());
 	}
 
-	private void cacheRollBack(Descom descom) {
+	private void cacheRollBack(List<Descom> descoms) {
 		//TODO 可能需要改为直接操作内存数据,目前直接设置为过期
-		CacheManager.getInstance().invalidate(descom.getId());
+		if( null != descoms && descoms.size()>0) {
+			CacheManager.getInstance().invalidate(descoms.get(0).getId());
+		}
 	}
 
 	/**
@@ -298,7 +303,6 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	/**
 	 * 风控检查
 	 * 1.非st;2.只交易6或0或3开头的
-	 * @param descom
 	 */
 	private boolean checkRisk(Detail detail) {
 		String windCode = generateWindCode(detail.getCode());

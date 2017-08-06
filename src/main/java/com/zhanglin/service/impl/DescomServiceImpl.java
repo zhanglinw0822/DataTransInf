@@ -44,26 +44,25 @@ public class DescomServiceImpl implements IDescomService{
 	@Resource
 	private InitHoldingLogMapper initHoldingLogDao;
 	
-	public Descom getDescom(String id) {
+	public List<Descom> getDescom(String id) {
 		DescomExample example = new DescomExample();
 		example.createCriteria().andIdEqualTo(id);
 		List<Descom> descoms = descomDao.selectByExample(example);
-		if(descoms.size()>0){
-			Descom descom = descoms.get(0);
-			
+		for (int i = 0; i < descoms.size(); i++) {
+			Descom descom =  descoms.get(i);
 			PositionExample positionExample = new PositionExample();
 			positionExample.createCriteria().andNewidEqualTo(descom.getNewid());
 			descom.setPosition(positionDao.selectByExample(positionExample));
-			
+
 			PositionRTExample positionRTExample = new PositionRTExample();
 			positionRTExample.createCriteria().andNewidEqualTo(descom.getNewid());
 			descom.setPositionRT(positionRTDao.selectByExample(positionRTExample));
-			
+
 			descom.setAsset(assetRTDao.selectByPrimaryKey(descom.getNewid()));
-			
+
 			descom.setFirstAsset(assetDao.selectFirstAsset(descom.getNewid()));
 		}
-		return descoms.size()>0?descoms.get(0):null;
+		return descoms;
 	}
 
 	public void insertOrder(Order order) {

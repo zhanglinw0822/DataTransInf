@@ -7,10 +7,11 @@ import com.zhanglin.pojo.Order;
 import com.zhanglin.pojo.PositionRT;
 import com.zhanglin.pojo.Record;
 
+import java.util.List;
 
 
 public interface IDescomService {
-	public Descom getDescom(String id);
+	public List<Descom> getDescom(String id);
 
 	public void insertOrder(Order order);
 

@@ -1,5 +1,6 @@
 package com.zhanglin.cache;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -16,11 +17,11 @@ import com.zhanglin.tools.SpringContextUtil;
 
 public class CacheManager {
 	private static Logger logger = Logger.getLogger(CacheManager.class);  
-	private LoadingCache<String, Descom> descoms = CacheBuilder.newBuilder()
+	private LoadingCache<String, List<Descom>> descoms = CacheBuilder.newBuilder()
 			.expireAfterWrite(1, TimeUnit.HOURS)
-			.build(new CacheLoader<String, Descom>() {
+			.build(new CacheLoader<String, List<Descom>>() {
 				@Override
-				public Descom load(String key) throws Exception {
+				public List<Descom> load(String key) throws Exception {
 					return loadDescom(key);
 				}
 			});
@@ -72,11 +73,11 @@ public class CacheManager {
 	IDescomService service = SpringContextUtil.getBean("descomService");
 	IMarketService marketService = (IMarketService)SpringContextUtil.getBean("marketService");
 	
-	private Descom loadDescom(String id) throws Exception {
-		Descom descom = service.getDescom(id);
-		if(null==descom)
+	private List<Descom> loadDescom(String id) throws Exception {
+		List<Descom> descoms = service.getDescom(id);
+		if(null==descoms || descoms.size()==0)
 			throw new Exception("组合ID="+id+"未找到数据");
-		return descom;
+		return descoms;
 	}
 	
 	private String loadSystemStatus() {
@@ -92,11 +93,11 @@ public class CacheManager {
 		return marketService.getInitHoldings();
 	}
 	
-	public Descom getDescom(String id){
+	public List<Descom> getDescom(String id){
 		try {
-			Descom descom = descoms.get(id);
+			List<Descom> results = descoms.get(id);
 			logger.info("缓存中数据："+descoms.asMap());
-			return descom;
+			return results;
 		} catch (Exception e) {
 			logger.error("获取组合失败", e);
 			return null;

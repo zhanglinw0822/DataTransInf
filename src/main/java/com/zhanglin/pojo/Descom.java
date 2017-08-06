@@ -21,8 +21,10 @@ public class Descom {
     private BigDecimal istrue;
 
     private Date updatetime;
-    
-    /**
+
+	private BigDecimal tstatus;
+
+	/**
      * 组合资金
      */
     private AssetRT asset;
@@ -127,6 +129,14 @@ public class Descom {
         this.updatetime = updatetime;
     }
 
+	public BigDecimal getTstatus() {
+		return tstatus;
+	}
+
+	public void setTstatus(BigDecimal tstatus) {
+		this.tstatus = tstatus;
+	}
+
 	public void addPosition(PositionRT position) {
 		this.positionRT.add(position);
 		putCodePosition(position.getCode()+"_"+position.getSource(),position.getNum());
@@ -144,7 +154,7 @@ public class Descom {
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("newid", newid)
 				.add("id", id).add("time", time).add("istrue", istrue)
-				.add("updatetime", updatetime).add("asset", asset)
+				.add("updatetime", updatetime).add("tstatus", tstatus).add("asset", asset)
 				.add("position", position).add("positionRT", positionRT)
 				.add("codePositions", codePositions).toString();
 	}
