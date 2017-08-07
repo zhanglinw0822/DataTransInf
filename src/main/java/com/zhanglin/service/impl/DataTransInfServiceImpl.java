@@ -77,6 +77,10 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 				Descom descom =  descoms.get(i);
 				if(descom!=null&&descom.getIstrue().compareTo(BigDecimal.ONE)==0){
 					boolean initholdingflag = (descom.getTstatus().intValue()==1);
+					//初始化操作只能操作initholdingflag状态组合
+					if(!isFromInterface&&!initholdingflag){
+						return;
+					}
 					//清除指令文件，避免脏数据
 					String filename = getFileName(descom, data);
 					FileTools.delete(filename, tempPath);
@@ -132,7 +136,8 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 
 	private boolean isInitHolding(Detail detail, BigDecimal newId) {
 		//key为股票代码_newid
-		return CacheManager.getInstance().getInitHolding().containsKey(detail.getCode()+"_"+newId.intValue());
+//		return CacheManager.getInstance().getInitHolding().containsKey(detail.getCode()+"_"+newId.intValue());
+		return true;
 	}
 	private String getFileName(Descom descom, Data data) {
 		FileName filename = new FileName();
