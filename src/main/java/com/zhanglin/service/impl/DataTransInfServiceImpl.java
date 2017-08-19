@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.zhanglin.pojo.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,6 @@ import com.zhanglin.bean.FileName;
 import com.zhanglin.bean.Trade;
 import com.zhanglin.cache.CacheManager;
 import com.zhanglin.cache.DataManager;
-import com.zhanglin.pojo.AssetRT;
-import com.zhanglin.pojo.Descom;
-import com.zhanglin.pojo.InitHolding;
-import com.zhanglin.pojo.InitHoldingLog;
-import com.zhanglin.pojo.Order;
-import com.zhanglin.pojo.PositionRT;
-import com.zhanglin.pojo.Record;
 import com.zhanglin.service.IDataTransInfService;
 import com.zhanglin.service.IDescomService;
 import com.zhanglin.service.IMarketService;
@@ -76,6 +70,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			for (int i = 0; i < descoms.size(); i++) {
 				Descom descom =  descoms.get(i);
 				if(descom!=null&&descom.getIstrue().compareTo(BigDecimal.ONE)==0){
+
 					boolean initholdingflag = (descom.getTstatus().intValue()==1);
 					//初始化操作只能操作initholdingflag状态组合
 					if(!isFromInterface&&!initholdingflag){
@@ -86,7 +81,10 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 					FileTools.delete(filename, tempPath);
 					for (Iterator<Detail> iterator = data.getDetails().iterator(); iterator.hasNext();) {
 						Detail detail = iterator.next();
-						if(checkRisk(detail)){
+						if(checkRisk(detail) ){
+							AllClose allClose = CacheManager.getInstance().getAllClose().get(generateWindCode(detail.getCode()));
+							//生成真实价格
+							generateRelaPrice(detail,allClose);
 							//该股票是否为初始化持仓中的股票
 							boolean isInitHolding = false;
 							//接口数据并且需要处理初始化持仓，判断股票是否在初始化持仓中
@@ -132,6 +130,36 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			cacheRollBack(descoms);
 			throw e;
 		}
+	}
+
+	/**
+	 * 如果是买入： newprice=price*(1+比例)，用newprice与涨停价比较，如果小于等于涨停价，就用newprice做为指令文件中的价格，否则用涨停价作为指令文件中的价格。
+	 * 如果是卖出:  newprice=price*(1-比例)，用newprice与跌停价比较，如果大于等于跌停价，就用newprice做为指令文件中的价格，否则用跌停价作为指令文件中的价格。
+	 * @param detail
+	 * @param allClose
+	 * @throws Exception
+	 */
+	private void generateRelaPrice(Detail detail, AllClose allClose) throws Exception {
+		BigDecimal ratio = new BigDecimal(CustomizedPropertyConfigurer.getStringContextProperty("ratio"));
+		BigDecimal newprice;
+		if(detail.getTrading_type()==Constant.TRADE_TYPE_BUY) {
+			BigDecimal tempprice = detail.getPrice().multiply(new BigDecimal(1).add(ratio));
+			if(allClose.getZt().subtract(tempprice).compareTo(new BigDecimal(0))>0){
+				newprice = tempprice;
+			}else{
+				newprice = allClose.getZt();
+			}
+		}else if(detail.getTrading_type()==Constant.TRADE_TYPE_SELL){
+			BigDecimal tempprice = detail.getPrice().multiply(new BigDecimal(1).subtract(ratio));
+			if(allClose.getDt().subtract(tempprice).compareTo(new BigDecimal(0))<0){
+				newprice = tempprice;
+			}else{
+				newprice = allClose.getDt();
+			}
+		}else{
+			throw new Exception("未获取到正确的买卖标识");
+		}
+		detail.setPrice(newprice);
 	}
 
 	private boolean isInitHolding(Detail detail, BigDecimal newId) {
@@ -319,6 +347,11 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		if(!(beginCode.equals("0")||beginCode.equals("3")||beginCode.equals("6"))){
 			return false;
 		}
+		AllClose allClose = CacheManager.getInstance().getAllClose().get(windCode);
+		//判断ALLCLOSE是否存在且是交易状态
+		if(allClose == null || !"交易".equals(allClose.getStatus())){
+			return false;
+		}
 		return true;
 	}
 	private String generateWindCode(String code) {
@@ -331,11 +364,17 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			List<InitHolding> initHoldings = marketService.getInitHoldingList();
 			for (Iterator<InitHolding> iterator = initHoldings.iterator(); iterator.hasNext();) {
 				InitHolding initHolding = iterator.next();
+				String windCode = generateWindCode(initHolding.getCode());
+				AllClose allClose = CacheManager.getInstance().getAllClose().get(windCode);
+				//判断ALLCLOSE是否存在且是交易状态,获取涨停价格
+				if(allClose == null || !"交易".equals(allClose.getStatus())){
+					return;
+				}
 				Data data  = new Data();
 				
 				Detail detail = new Detail();
 				detail.setCode(initHolding.getCode());
-				detail.setPrice(initHolding.getCloseprice());
+				detail.setPrice(allClose.getZt());
 				detail.setTrading_type(Constant.TRADE_TYPE_BUY);
 				detail.setWeight1(BigDecimal.ZERO);
 				detail.setWeight2(initHolding.getWeight());

@@ -1,10 +1,13 @@
 package com.zhanglin.bean;
 
+import java.util.UUID;
+
 public class FileName {
 	private String newid;
 	private String realtime;
 	private String ordertime;
 	private long now = System.currentTimeMillis();
+	private UUID uuid = UUID.randomUUID();
 	public String getNewid() {
 		return newid;
 	}
@@ -25,7 +28,7 @@ public class FileName {
 	}
 	@Override
 	public String toString() {
-		return newid + "_" + ordertime+ "_" + realtime+"_"+ now + ".txt";
+		return newid + "_" + ordertime+ "_" + realtime+"_"+ uuid + ".txt";
 	}
 	
 }

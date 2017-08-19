@@ -14,9 +14,9 @@ public class HandleInitHoldingScheduledJob extends QuartzJobBean{
 	@Override
 	protected void executeInternal(JobExecutionContext context)
 			throws JobExecutionException {
-//		if(CustomizedPropertyConfigurer.getBooleanContextProperty("initholdingflag")){
+		if(CustomizedPropertyConfigurer.getBooleanContextProperty("initholdingflag")){
 			transInfoService.handleInitHolding();
-//		}
+		}
 	}
 	public void setTransInfoService(IDataTransInfService transInfoService) {
 		this.transInfoService = transInfoService;

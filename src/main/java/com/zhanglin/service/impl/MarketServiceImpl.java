@@ -10,31 +10,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.zhanglin.dao.*;
+import com.zhanglin.pojo.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zhanglin.Constant;
 import com.zhanglin.cache.CacheManager;
-import com.zhanglin.dao.AssetMapper;
-import com.zhanglin.dao.AssetRTMapper;
-import com.zhanglin.dao.DescomMapper;
-import com.zhanglin.dao.InitHoldingMapper;
-import com.zhanglin.dao.OrderMapper;
-import com.zhanglin.dao.PositionMapper;
-import com.zhanglin.dao.PositionRTMapper;
-import com.zhanglin.dao.STMapper;
-import com.zhanglin.dao.SystemStatusMapper;
-import com.zhanglin.pojo.Asset;
-import com.zhanglin.pojo.AssetRT;
-import com.zhanglin.pojo.Descom;
-import com.zhanglin.pojo.DescomExample;
-import com.zhanglin.pojo.InitHolding;
-import com.zhanglin.pojo.InitHoldingExample;
-import com.zhanglin.pojo.Position;
-import com.zhanglin.pojo.PositionRT;
-import com.zhanglin.pojo.ST;
-import com.zhanglin.pojo.STExample;
-import com.zhanglin.pojo.SystemStatus;
 import com.zhanglin.service.IMarketService;
 import com.zhanglin.tools.CustomizedPropertyConfigurer;
 @Transactional
@@ -59,6 +41,8 @@ public class MarketServiceImpl implements IMarketService{
 	private InitHoldingMapper initHoldingDao;
 	@Resource
 	private DescomMapper descomDao;
+	@Resource
+	private AllCloseMapper allCloseDao;
     private boolean initholdingflag = CustomizedPropertyConfigurer.getBooleanContextProperty("initholdingflag");;
 	
 	public void openMarket() {
@@ -108,6 +92,17 @@ public class MarketServiceImpl implements IMarketService{
 		}
 		CacheManager.getInstance().getSTCode();
 		CacheManager.getInstance().getSystemStatus();
+		CacheManager.getInstance().getAllClose();
+	}
+
+	public Map<String, AllClose> getAllCloses() {
+		Map<String, AllClose> map = new HashMap<String, AllClose>();
+		List<AllClose> sts = allCloseDao.list();
+		for (Iterator<AllClose> iterator = sts.iterator(); iterator.hasNext();) {
+			AllClose temp = iterator.next();
+			map.put(temp.getCode(), temp);
+		}
+		return map;
 	}
 
 	public void closeMarket() {

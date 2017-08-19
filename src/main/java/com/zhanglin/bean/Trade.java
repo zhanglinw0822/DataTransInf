@@ -8,8 +8,8 @@ public class Trade {
 	private String tradetype;
 	private String hedgingOrSpeculation="";
 	private String priceModel="LIMIT";
-	private String priceType="T5";
-	private String price="0";
+	private String priceType="T6";
+	private String price;
 	private String num;
 
 	public String getMarket() {

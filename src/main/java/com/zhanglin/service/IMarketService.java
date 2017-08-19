@@ -3,6 +3,7 @@ package com.zhanglin.service;
 import java.util.List;
 import java.util.Map;
 
+import com.zhanglin.pojo.AllClose;
 import com.zhanglin.pojo.InitHolding;
 
 
@@ -42,4 +43,9 @@ public interface IMarketService {
 	 * @return 
 	 */
 	public void loadCache();
+	/**
+	 * 加载全市场交易状态与价格
+	 * @return
+	 */
+    public Map<String,AllClose> getAllCloses();
 }

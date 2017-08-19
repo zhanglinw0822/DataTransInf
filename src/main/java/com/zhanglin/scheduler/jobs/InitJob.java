@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import com.zhanglin.cache.CacheManager;
 import org.apache.log4j.Logger;
 import org.quartz.CronExpression;
 
@@ -49,6 +50,7 @@ public class InitJob {
 			IMarketService service = (IMarketService)SpringContextUtil.getBean("marketService");
 			IDataTransInfService dataTransInfService = (IDataTransInfService)SpringContextUtil.getBean("dataTransInfService");
 			String status = service.getSystemStaus();
+			CacheManager.getInstance().getAllClose();
 			// 当天开盘前
 			if (nextOpenTime.get(Calendar.DAY_OF_MONTH) == ca
 					.get(Calendar.DAY_OF_MONTH)) {
@@ -83,7 +85,6 @@ public class InitJob {
 				}
 			}
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.zhanglin.pojo.AllClose;
 import org.apache.log4j.Logger;
 
 import com.google.common.cache.CacheBuilder;
@@ -53,7 +54,19 @@ public class CacheManager {
 				}
 
 			});
-	
+
+	private LoadingCache<String, Map<String,AllClose>> AllCloses = CacheBuilder.newBuilder()
+			.expireAfterWrite(1, TimeUnit.DAYS)
+			.build(new CacheLoader<String, Map<String,AllClose>>() {
+				@Override
+				public Map<String,AllClose> load(String key) throws Exception {
+					return loadAllCloses();
+				}
+
+			});
+
+
+
 	private static CacheManager instance=null;  
 	
 	private CacheManager(){
@@ -76,7 +89,7 @@ public class CacheManager {
 	private List<Descom> loadDescom(String id) throws Exception {
 		List<Descom> descoms = service.getDescom(id);
 		if(null==descoms || descoms.size()==0)
-			throw new Exception("组合ID="+id+"未找到数据");
+			logger.error("组合ID="+id+"未找到数据");
 		return descoms;
 	}
 	
@@ -87,6 +100,10 @@ public class CacheManager {
 
 	private Map<String,String> loadSTCodes() {
 		return marketService.getSTCodes();
+	}
+
+	private Map<String,AllClose> loadAllCloses() {
+		return marketService.getAllCloses();
 	}
 	
 	private Map<String,InitHolding> loadInitHoldings() throws Exception {
@@ -131,6 +148,15 @@ public class CacheManager {
 			return null;
 		}
 	}
+
+	public Map<String,AllClose> getAllClose(){
+		try {
+			return AllCloses.get("AllClose");
+		} catch (Exception e) {
+			logger.error("获取AllClose失败", e);
+			return null;
+		}
+	}
 	
 	public void invalidate(String id){
 		descoms.invalidate(id);
@@ -141,5 +167,6 @@ public class CacheManager {
 		initHoldings.invalidateAll();
 		status.invalidateAll();
 		STCodes.invalidateAll();
+		AllCloses.invalidateAll();
 	}
 }
