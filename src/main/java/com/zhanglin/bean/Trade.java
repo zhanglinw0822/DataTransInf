@@ -8,7 +8,7 @@ public class Trade {
 	private String tradetype;
 	private String hedgingOrSpeculation="";
 	private String priceModel="LIMIT";
-	private String priceType="T6";
+	private String priceType="F";
 	private String price;
 	private String num;
 

@@ -252,6 +252,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		trade.setCode(detail.getCode());
 		trade.setTradetype(String.valueOf(detail.getTrading_type()));
 		trade.setNum(changePosition.toString());
+		trade.setPrice(detail.getPrice().toString());
 		
 		FileTools.write(filename, tempPath, trade.getTradeOrder().getBytes());
 	}
