@@ -83,8 +83,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 						Detail detail = iterator.next();
 						if(checkRisk(detail) ){
 							AllClose allClose = CacheManager.getInstance().getAllClose().get(generateWindCode(detail.getCode()));
-							//生成真实价格
-							generateRelaPrice(detail,allClose);
+							
 							//该股票是否为初始化持仓中的股票
 							boolean isInitHolding = false;
 							//接口数据并且需要处理初始化持仓，判断股票是否在初始化持仓中
@@ -94,6 +93,8 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 							logger.info("isInitHolding="+isInitHolding);
 							BigDecimal changePosition = generatePosition(descom,detail,data.getNetvalue(),isInitHolding);
 							if(changePosition.compareTo(BigDecimal.ZERO)==1){
+								//生成真实价格
+								generateRelaPrice(detail,allClose,isFromInterface);
 								//数据来自接口或者系统不需要处理初始化持仓数据
 								if(isFromInterface||!initholdingflag){
 									generateRecord(descom,detail,changePosition,data,isInitHolding,filename);
@@ -139,14 +140,19 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 	 * @param allClose
 	 * @throws Exception
 	 */
-	private void generateRelaPrice(Detail detail, AllClose allClose) throws Exception {
+	private void generateRelaPrice(Detail detail, AllClose allClose, boolean isFromInterface) throws Exception {
 		BigDecimal ratio = new BigDecimal(CustomizedPropertyConfigurer.getStringContextProperty("ratio"));
 		BigDecimal newprice;
 		if(detail.getTrading_type()==Constant.TRADE_TYPE_BUY) {
-			BigDecimal tempprice = detail.getPrice().multiply(new BigDecimal(1).add(ratio));
-			if(allClose.getZt().subtract(tempprice).compareTo(new BigDecimal(0))>0){
-				newprice = tempprice;
+			if(isFromInterface){
+				BigDecimal tempprice = detail.getPrice().multiply(new BigDecimal(1).add(ratio));
+				if(allClose.getZt().subtract(tempprice).compareTo(new BigDecimal(0))>0){
+					newprice = tempprice;
+				}else{
+					newprice = allClose.getZt();
+				}
 			}else{
+				//初始化持仓使用涨停价来下单
 				newprice = allClose.getZt();
 			}
 		}else if(detail.getTrading_type()==Constant.TRADE_TYPE_SELL){
@@ -159,7 +165,8 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		}else{
 			throw new Exception("未获取到正确的买卖标识");
 		}
-		detail.setPrice(newprice);
+		//价格取小数点后两位
+		detail.setPrice(newprice.multiply(Constant.WEIGHT_MULTIPLE).divide(Constant.WEIGHT_MULTIPLE, 2, BigDecimal.ROUND_DOWN));
 	}
 
 	private boolean isInitHolding(Detail detail, BigDecimal newId) {
@@ -375,7 +382,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 				
 				Detail detail = new Detail();
 				detail.setCode(initHolding.getCode());
-				detail.setPrice(allClose.getZt());
+				detail.setPrice(initHolding.getCloseprice());
 				detail.setTrading_type(Constant.TRADE_TYPE_BUY);
 				detail.setWeight1(BigDecimal.ZERO);
 				detail.setWeight2(initHolding.getWeight());
