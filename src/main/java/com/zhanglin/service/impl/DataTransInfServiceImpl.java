@@ -376,7 +376,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 				AllClose allClose = CacheManager.getInstance().getAllClose().get(windCode);
 				//判断ALLCLOSE是否存在且是交易状态,获取涨停价格
 				if(allClose == null || !"交易".equals(allClose.getStatus())){
-					return;
+					continue;
 				}
 				Data data  = new Data();
 				
