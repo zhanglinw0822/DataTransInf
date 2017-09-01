@@ -166,7 +166,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			throw new Exception("未获取到正确的买卖标识");
 		}
 		//价格取小数点后两位
-		detail.setPrice(newprice.multiply(Constant.WEIGHT_MULTIPLE).divide(Constant.WEIGHT_MULTIPLE, 2, BigDecimal.ROUND_DOWN));
+		detail.setNewprice(newprice.multiply(Constant.WEIGHT_MULTIPLE).divide(Constant.WEIGHT_MULTIPLE, 2, BigDecimal.ROUND_DOWN));
 	}
 
 	private boolean isInitHolding(Detail detail, BigDecimal newId) {
@@ -259,7 +259,7 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		trade.setCode(detail.getCode());
 		trade.setTradetype(String.valueOf(detail.getTrading_type()));
 		trade.setNum(changePosition.toString());
-		trade.setPrice(detail.getPrice().toString());
+		trade.setPrice(detail.getNewprice().toString());
 		
 		FileTools.write(filename, tempPath, trade.getTradeOrder().getBytes());
 	}

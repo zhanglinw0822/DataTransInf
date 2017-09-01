@@ -15,6 +15,7 @@
     <result column="NET" property="net" jdbcType="DECIMAL" />
     <result column="W1" property="w1" jdbcType="DECIMAL" />
     <result column="W2" property="w2" jdbcType="DECIMAL" />
+    <result column="NEWPRICE" property="newprice" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -47,7 +48,7 @@
   </sql>
   <sql id="Base_Column_List" >
     MSGUID, ID, CODE, ORDER_PRICE, TRADETYPE, ORDER_TIME, DELAY, RECVTIME, NEWID, UPDATETIME, 
-    NET, W1, W2
+    NET, W1, W2, NEWPRICE
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zhanglin.pojo.OrderExample" >
     select
@@ -79,12 +80,12 @@
       ORDER_PRICE, TRADETYPE, ORDER_TIME, 
       DELAY, RECVTIME, NEWID, 
       UPDATETIME, NET, W1, 
-      W2)
+      W2, NEWPRICE)
     values (#{msguid,jdbcType=OTHER}, #{id,jdbcType=OTHER}, #{code,jdbcType=VARCHAR}, 
       #{orderPrice,jdbcType=DECIMAL}, #{tradetype,jdbcType=DECIMAL}, #{orderTime,jdbcType=VARCHAR}, 
       #{delay,jdbcType=DECIMAL}, #{recvtime,jdbcType=VARCHAR}, #{newid,jdbcType=DECIMAL}, 
       sysdate, #{net,jdbcType=DECIMAL}, #{w1,jdbcType=DECIMAL}, 
-      #{w2,jdbcType=DECIMAL})
+      #{w2,jdbcType=DECIMAL}, #{newprice,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.zhanglin.pojo.Order" >
     insert into T_ORDER

@@ -26,7 +26,7 @@ public class Record {
     private BigDecimal num;
     
     private BigDecimal price;
-    
+
     public BigDecimal getPrice() {
 		return price;
 	}

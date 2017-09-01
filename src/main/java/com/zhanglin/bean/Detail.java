@@ -25,6 +25,11 @@ public class Detail {
 	 * 交易方向,1：买，0：卖
 	 */
 	private int trading_type;
+
+	/**
+	 * 委托价格
+	 */
+	private BigDecimal newprice;
 	
 	public String getCode() {
 		return code==null?null:code.toUpperCase();
@@ -60,7 +65,15 @@ public class Detail {
 	public String toString() {
 		return MoreObjects.toStringHelper(this).add("code", code)
 				.add("price", price).add("weight1", weight1)
-				.add("weight2", weight2).add("trading_type", trading_type).toString();
+				.add("weight2", weight2).add("trading_type", trading_type)
+				.add("newprice",newprice).toString();
 	}
-	
+
+	public BigDecimal getNewprice() {
+		return newprice;
+	}
+
+	public void setNewprice(BigDecimal newprice) {
+		this.newprice = newprice;
+	}
 }

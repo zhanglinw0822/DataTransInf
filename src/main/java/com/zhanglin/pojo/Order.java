@@ -34,6 +34,8 @@ public class Order {
     private BigDecimal w1;
 
     private BigDecimal w2;
+
+    private BigDecimal newprice;
     
     public Order(Detail detail, Data data) {
     	this.msguid = data.getMsguid();
@@ -48,6 +50,7 @@ public class Order {
 		this.net = data.getNetvalue();
 		this.w1 = detail.getWeight1();
 		this.w2 = detail.getWeight2();
+		this.newprice = detail.getNewprice();
 	}
 
     public String getMsguid() {
