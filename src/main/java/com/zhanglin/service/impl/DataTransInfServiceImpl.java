@@ -299,7 +299,9 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 		//分母=委托价格
 		BigDecimal denominator = price;
 		//数量=分子/分母;(100的整数倍，向下取整, 不足100为0)
-		changePosition = numerator.divide(denominator.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_DOWN).multiply(Constant.POSITION_MULTIPLE);
+//		changePosition = numerator.divide(denominator.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_DOWN).multiply(Constant.POSITION_MULTIPLE);
+		//数量=分子/分母;(小于50的部分为0，大于50的部分进成100)
+		changePosition = numerator.divide(denominator.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_HALF_UP).multiply(Constant.POSITION_MULTIPLE);
 		
 		//买入指令
 		if(detail.getTrading_type()==Constant.TRADE_TYPE_BUY){
@@ -309,7 +311,9 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 			BigDecimal needAsset = buyPosition.multiply(price);
 			//买入需要资金大于可以资金，买入数量=cash/委托价格, (100的整数倍，向下取整, 不足100为0)
 			if(needAsset.compareTo(asset.getCash())==1){
-				changePosition = asset.getCash().divide(price.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_DOWN).multiply(Constant.POSITION_MULTIPLE);
+//				changePosition = asset.getCash().divide(price.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_DOWN).multiply(Constant.POSITION_MULTIPLE);
+				//小于50的部分为0，大于50的部分进成100
+				changePosition = asset.getCash().divide(price.multiply(Constant.POSITION_MULTIPLE),0,BigDecimal.ROUND_HALF_UP).multiply(Constant.POSITION_MULTIPLE);
 			}else{
 				//买入理论资金<=cash,实际买入数量=买入数量
 				changePosition = buyPosition;
