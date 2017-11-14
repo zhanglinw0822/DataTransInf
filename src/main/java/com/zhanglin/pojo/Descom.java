@@ -54,6 +54,10 @@ public class Descom {
 		this.positionRT = positionRT;
 		for (Iterator<PositionRT> iterator = positionRT.iterator(); iterator.hasNext();) {
 			PositionRT temp = iterator.next();
+			// 如果是当日减仓，需要更新使持仓数据减少
+			if (temp.getSource() == Constant.POSITION_SOURCE_NEW && temp.getNum().compareTo(BigDecimal.ZERO) < 0){
+				putCodePosition(temp.getCode()+"_"+Constant.POSITION_SOURCE_REAL, temp.getNum());
+			}
 			putCodePosition(temp.getCode()+"_"+temp.getSource(), temp.getNum());
 		}
 	}
@@ -77,7 +81,7 @@ public class Descom {
 	}
 	
 	public BigDecimal getHoldedCodeAccount(String code){
-		return codePositions.get(code+"_"+Constant.POSITION_SOURCE_PREVIOUS);
+		return codePositions.get(code+"_"+Constant.POSITION_SOURCE_REAL);
 	}
 	
 	public BigDecimal getNewHoldCodeAccount(String code){
@@ -139,6 +143,10 @@ public class Descom {
 
 	public void addPosition(PositionRT position) {
 		this.positionRT.add(position);
+		// 如果是当日减仓，需要使实际持仓数据减少
+		if (position.getSource() == Constant.POSITION_SOURCE_NEW && position.getNum().compareTo(BigDecimal.ZERO) < 0){
+			putCodePosition(position.getCode()+"_"+Constant.POSITION_SOURCE_REAL, position.getNum());
+		}
 		putCodePosition(position.getCode()+"_"+position.getSource(),position.getNum());
 	}
 	

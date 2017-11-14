@@ -61,7 +61,7 @@ public class MarketServiceImpl implements IMarketService{
 			for (Iterator<Position> iterator2 = positions.iterator(); iterator2.hasNext();) {
 				Position position_temp = iterator2.next();
 				PositionRT positionRT = new PositionRT(position_temp);
-				positionRT.setSource(Constant.POSITION_SOURCE_PREVIOUS);
+				positionRT.setSource(Constant.POSITION_SOURCE_REAL);
 				positionRTDao.insert(positionRT);
 			}
 		}

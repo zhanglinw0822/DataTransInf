@@ -66,9 +66,9 @@ public class Constant {
 	 */
 	public static final String SYSTEM_STATUS_CLOSE = "CLOSE";
 	/**
-	 * 运行时持仓类型-以往持仓
+	 * 运行时持仓类型-实际持仓
 	 */
-	public static final int POSITION_SOURCE_PREVIOUS = 0;
+	public static final int POSITION_SOURCE_REAL = 0;
 	/**
 	 * 运行时持仓类型-当日新增
 	 */
