@@ -330,9 +330,12 @@ public class DataTransInfServiceImpl implements IDataTransInfService {
 				if(positionAccount.compareTo(BigDecimal.ZERO)<=0){
 					changePosition = BigDecimal.ZERO; 
 				}else{
-					//调仓后权重==0,实际卖出数量=持仓数量
+					//调仓后权重==0,防止生成废单，可能会有一些误差
 					if(detail.getWeight2().compareTo(BigDecimal.ZERO)==0){
-						changePosition = positionAccount;
+						//卖出数量=(数量)A的绝对值
+						BigDecimal sellPosition = changePosition.abs();
+						//实际卖出数量=min(持仓数量，卖出数量);
+						changePosition = sellPosition.compareTo(positionAccount)==-1?sellPosition:positionAccount;
 					}else{
 						//卖出数量=(数量)A的绝对值
 						BigDecimal sellPosition = changePosition.abs();
